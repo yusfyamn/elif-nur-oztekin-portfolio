@@ -1,0 +1,13 @@
+{
+  "galeri": [
+    { "gorsel": "/portfolio/1.webp", "alt": "", "sira": 1 },
+    { "gorsel": "/portfolio/2.webp", "alt": "", "sira": 2 },
+    { "gorsel": "/portfolio/3.webp", "alt": "", "sira": 3 },
+    { "gorsel": "/portfolio/4.webp", "alt": "", "sira": 4 },
+    { "gorsel": "/portfolio/5.webp", "alt": "", "sira": 5 },
+    { "gorsel": "/portfolio/6.webp", "alt": "", "sira": 6 },
+    { "gorsel": "/portfolio/7.webp", "alt": "", "sira": 7 },
+    { "gorsel": "/portfolio/8.webp", "alt": "", "sira": 8 },
+    { "gorsel": "/portfolio/9.webp", "alt": "", "sira": 9 }
+  ]
+}

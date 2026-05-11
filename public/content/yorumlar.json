@@ -1,0 +1,46 @@
+{
+  "yorumlar": [
+    {
+      "isim": "Selin A.",
+      "metin": "Suluboya atölyesine katılmadan önce hiç fırça tutmamıştım. Elif'in anlattığı her şey o kadar açık ve sabırlıydı ki sonunda kendi işimi yapabildiğimi hissettim.",
+      "yildiz": 5,
+      "stil": "normal",
+      "sira": 1
+    },
+    {
+      "isim": "Deniz K.",
+      "metin": "Seramik kaseyi aldığımda fotoğraftan çok daha güzel geldi. Her açıdan farklı bir detay var — el yapımının tam olarak böyle bir şey olduğunu anladım.",
+      "yildiz": 5,
+      "stil": "alt",
+      "sira": 2
+    },
+    {
+      "isim": "Merve T.",
+      "metin": "Kil atölyesi benim için gerçek bir terapi oldu. Ellerin içinde şekil alan kil ile vakit geçirmek bambaşka bir his. Her hafta bekliyorum.",
+      "yildiz": 5,
+      "stil": "normal",
+      "sira": 3
+    },
+    {
+      "isim": "Ayşe B.",
+      "metin": "Tekstil baskılarını düğün hediyesi olarak aldım. Paketleme bile başlı başına bir deneyimdi — bu kadar özenli bir ürün beklentimin çok ötesindeydi.",
+      "yildiz": 5,
+      "stil": "alt",
+      "sira": 4
+    },
+    {
+      "isim": "Canan Y.",
+      "metin": "Özel sipariş verdim, tam istediğim gibi çıktı. Hem sabırlı hem de çok ince düşünen biri. Süreci takip etmek bile keyifliydi.",
+      "yildiz": 5,
+      "stil": "normal",
+      "sira": 5
+    },
+    {
+      "isim": "Zeynep G.",
+      "metin": "Riso baskı setini görünce duraklamak zorunda kaldım. Fiziksel bir şeyin bu kadar düşünülmüş olması artık gerçekten nadir.",
+      "yildiz": 5,
+      "stil": "alt",
+      "sira": 6
+    }
+  ]
+}

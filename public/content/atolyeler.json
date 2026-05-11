@@ -1,0 +1,49 @@
+{
+  "atolyeler": [
+    {
+      "isim": "İlkbahar Suluboya Atölyesi",
+      "aciklama": "Suluboya tekniklerinin temel prensiplerinden başlayarak katman katman ilerliyoruz. Renk geçişleri, desen oluşturma, kompozisyon ve serbest ifade üzerine beş haftalık program.",
+      "durum": "aktif",
+      "tarih": "Mayıs 2026 — Her Cumartesi",
+      "gorsel": "/atolyeler/1.webp",
+      "gorsel_alt": "Suluboya Atölyesi",
+      "bilgiler": [
+        { "etiket": "Seviye", "deger": "Başlangıç & Orta" },
+        { "etiket": "Süre", "deger": "5 hafta · 2 saat/hafta" },
+        { "etiket": "Kontenjan", "deger": "8 kişi" }
+      ],
+      "reverse": false,
+      "sira": 1
+    },
+    {
+      "isim": "El Yapımı Seramik",
+      "aciklama": "Çarktan bağımsız, serbest elle şekillendirme tekniklerine odaklanan bir seramik deneyimi. Kil ile birebir temas, form ve doku keşfetmek isteyenler için.",
+      "durum": "aktif",
+      "tarih": "Haziran 2026 — Her Pazar",
+      "gorsel": "/atolyeler/3.webp",
+      "gorsel_alt": "Seramik Atölyesi",
+      "bilgiler": [
+        { "etiket": "Seviye", "deger": "Herkes için" },
+        { "etiket": "Süre", "deger": "4 hafta · 2.5 saat/hafta" },
+        { "etiket": "Kontenjan", "deger": "6 kişi" }
+      ],
+      "reverse": true,
+      "sira": 2
+    },
+    {
+      "isim": "Soyut Desen & Kolaj",
+      "aciklama": "Kağıt, doku ve malzemenin özgürce bir araya geldiği soyut çalışmalar. Katmanlı bir anlatı yaratmanın yollarını keşfediyoruz.",
+      "durum": "dolu",
+      "tarih": "Nisan 2026 — Her Çarşamba",
+      "gorsel": "/atolyeler/5.webp",
+      "gorsel_alt": "Desen Atölyesi",
+      "bilgiler": [
+        { "etiket": "Seviye", "deger": "Orta & İleri" },
+        { "etiket": "Süre", "deger": "6 hafta · 2 saat/hafta" },
+        { "etiket": "Kontenjan", "deger": "8 kişi" }
+      ],
+      "reverse": false,
+      "sira": 3
+    }
+  ]
+}

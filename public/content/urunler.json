@@ -1,0 +1,40 @@
+{
+  "urunler": [
+    {
+      "isim": "Toprak Kase — No.7",
+      "kategori": "seramik",
+      "fiyat": 680,
+      "gorsel": "/urunler/img_1.webp",
+      "gorsel_alt": "Toprak Kase",
+      "rozet": "Yeni",
+      "sira": 1
+    },
+    {
+      "isim": "Sumi Furoshiki",
+      "kategori": "tekstil",
+      "fiyat": 420,
+      "gorsel": "/urunler/img_2.webp",
+      "gorsel_alt": "Sumi Furoshiki",
+      "rozet": "",
+      "sira": 2
+    },
+    {
+      "isim": "Riso Baskı — A4 Set (3lü)",
+      "kategori": "kagit",
+      "fiyat": 350,
+      "gorsel": "/urunler/img_3.webp",
+      "gorsel_alt": "Riso Baskı Set",
+      "rozet": "",
+      "sira": 3
+    },
+    {
+      "isim": "Toprak Fincan Çifti",
+      "kategori": "seramik",
+      "fiyat": 520,
+      "gorsel": "/urunler/img_4.webp",
+      "gorsel_alt": "Toprak Fincan",
+      "rozet": "Son 2",
+      "sira": 4
+    }
+  ]
+}

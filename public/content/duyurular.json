@@ -1,0 +1,49 @@
+{
+  "duyurular": [
+    {
+      "baslik": "İlkbahar Suluboya Atölyesi başlıyor",
+      "etiket": "Yeni Atölye",
+      "aciklama": "Mayıs ayı boyunca her Cumartesi, Muny Art Lab'da suluboya tekniklerine dair kapsamlı bir program.",
+      "gorsel": "/atolyeler/2.webp",
+      "gorsel_alt": "Suluboya Atölyesi",
+      "link": { "url": "/atolyeler", "metin": "Detaylar →" },
+      "sira": 1
+    },
+    {
+      "baslik": "Monamuj Design — yeni koleksiyon",
+      "etiket": "Ürün",
+      "aciklama": "El yapımı seramik ve tekstil tasarımlarından oluşan \"Toprak\" koleksiyonu yayında.",
+      "gorsel": "/urunler/img_1.webp",
+      "gorsel_alt": "Toprak Koleksiyonu",
+      "link": { "url": "/urunler", "metin": "İncele →" },
+      "sira": 2
+    },
+    {
+      "baslik": "Özel sipariş formları açıldı",
+      "etiket": "Duyuru",
+      "aciklama": "Kişiselleştirilmiş tasarım talepleri için form alımları yeniden başladı. Mayıs sonu dolacak.",
+      "gorsel": "/urunler/img_3.webp",
+      "gorsel_alt": "Özel Sipariş",
+      "link": { "url": "/iletisim", "metin": "Başvur →" },
+      "sira": 3
+    },
+    {
+      "baslik": "El Yapımı Seramik — Haziran başlıyor",
+      "etiket": "Atölye",
+      "aciklama": "Çarktan bağımsız, serbest elle şekillendirme. Kil ile ilk temas deneyimi için 6 kişilik küçük grup.",
+      "gorsel": "/atolyeler/4.webp",
+      "gorsel_alt": "Seramik Atölyesi",
+      "link": { "url": "/atolyeler", "metin": "Kayıt Ol →" },
+      "sira": 4
+    },
+    {
+      "baslik": "Yaz koleksiyonu geliyor",
+      "etiket": "Ürün",
+      "aciklama": "Sumi ve botanik desenlerden ilham alan yeni tekstil ve baskı tasarımları yakında yayında.",
+      "gorsel": "/urunler/img_2.webp",
+      "gorsel_alt": "Tekstil",
+      "link": { "url": "/urunler", "metin": "İncele →" },
+      "sira": 5
+    }
+  ]
+}

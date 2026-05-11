@@ -1,6 +1,7 @@
 import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
+import { getUrunler } from "./content.js";
 import Lenis from "lenis";
 
 const lenis = new Lenis();
@@ -16,19 +17,60 @@ initMobileMenu();
 initContactForm();
 initTransitions();
 
-const filterBtns = document.querySelectorAll(".filter-btn");
-const cards = document.querySelectorAll(".urun-card[data-category]");
+const kategoriMap = { seramik: "Seramik", tekstil: "Tekstil", kagit: "Kağıt & Baskı" };
 
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    filterBtns.forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
+function buildUrunCard(urun) {
+  const article = document.createElement("article");
+  article.className = "urun-card";
+  article.dataset.category = urun.kategori;
 
-    const filter = btn.dataset.filter;
+  article.innerHTML = `
+    <div class="urun-img">
+      <img src="${urun.gorsel}" alt="${urun.gorsel_alt ?? urun.isim}" />
+      ${urun.rozet ? `<span class="urun-badge">${urun.rozet}</span>` : ""}
+    </div>
+    <div class="urun-info">
+      <span class="urun-kategori">${kategoriMap[urun.kategori] ?? urun.kategori}</span>
+      <h2 class="urun-name">${urun.isim}</h2>
+      <p class="urun-fiyat">₺${urun.fiyat}</p>
+    </div>
+  `;
+  return article;
+}
 
-    cards.forEach((card) => {
-      const matches = filter === "all" || card.dataset.category === filter;
-      card.classList.toggle("hidden", !matches);
+const siparisCard = `
+  <article class="urun-card urun-card--siparis">
+    <div class="urun-siparis-inner">
+      <p class="siparis-label">Özel Sipariş</p>
+      <h2 class="siparis-title">Sana özel bir tasarım mı istiyorsun?</h2>
+      <a href="/iletisim" class="siparis-btn">Talep Oluştur →</a>
+    </div>
+  </article>
+`;
+
+async function loadUrunler() {
+  const urunler = await getUrunler();
+  const grid = document.querySelector(".urun-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  urunler.forEach((u) => grid.appendChild(buildUrunCard(u)));
+  grid.insertAdjacentHTML("beforeend", siparisCard);
+
+  // Filtre butonları — kartlar DOM'a eklendikten sonra başlat
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const cards = grid.querySelectorAll(".urun-card[data-category]");
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const filter = btn.dataset.filter;
+      cards.forEach((card) => {
+        card.classList.toggle("hidden", filter !== "all" && card.dataset.category !== filter);
+      });
     });
   });
-});
+}
+
+loadUrunler().catch(console.error);

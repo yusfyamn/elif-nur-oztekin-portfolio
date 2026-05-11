@@ -1,0 +1,12 @@
+{
+  "fotograflar": [
+    { "gorsel": "/atolyeler/1.webp", "alt": "Atölye", "boyut": "tall" },
+    { "gorsel": "/atolyeler/2.webp", "alt": "Atölye", "boyut": "normal" },
+    { "gorsel": "/atolyeler/3.webp", "alt": "Atölye", "boyut": "normal" },
+    { "gorsel": "/atolyeler/4.webp", "alt": "Atölye", "boyut": "wide" },
+    { "gorsel": "/atolyeler/5.webp", "alt": "Atölye", "boyut": "normal" },
+    { "gorsel": "/atolyeler/6.webp", "alt": "Atölye", "boyut": "normal" },
+    { "gorsel": "/atolyeler/7.webp", "alt": "Atölye", "boyut": "wide" },
+    { "gorsel": "/atolyeler/8.webp", "alt": "Atölye", "boyut": "normal" }
+  ]
+}
