@@ -5,8 +5,238 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>İçerik Yönetimi — ELİF NUR ÖZTEKİN</title>
+    <script>
+      // config.yml yerine JS ile inline config — 404 riski yok
+      window.CMS_CONFIG = {
+        backend: {
+          name: "github",
+          repo: "yusfyamn/elif-nur-oztekin-portfolio",
+          branch: "main",
+          base_url: "https://fastidious-griffin-2f0fde.netlify.app",
+          auth_endpoint: "auth"
+        },
+        media_folder: "public/uploads",
+        public_folder: "/uploads",
+        locale: "tr",
+        collections: [
+          {
+            name: "duyurular",
+            label: "Duyurular",
+            files: [
+              {
+                label: "Duyurular Listesi",
+                name: "duyurular_listesi",
+                file: "public/content/duyurular.json",
+                fields: [
+                  {
+                    label: "Duyurular",
+                    name: "duyurular",
+                    widget: "list",
+                    fields: [
+                      { label: "Başlık", name: "baslik", widget: "string" },
+                      { label: "Etiket", name: "etiket", widget: "string" },
+                      { label: "Açıklama", name: "aciklama", widget: "text" },
+                      { label: "Görsel", name: "gorsel", widget: "image" },
+                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
+                      {
+                        label: "Link", name: "link", widget: "object",
+                        fields: [
+                          { label: "URL", name: "url", widget: "string" },
+                          { label: "Metin", name: "metin", widget: "string" }
+                        ]
+                      },
+                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "urunler",
+            label: "Ürünler",
+            files: [
+              {
+                label: "Ürünler Listesi",
+                name: "urunler_listesi",
+                file: "public/content/urunler.json",
+                fields: [
+                  {
+                    label: "Ürünler",
+                    name: "urunler",
+                    widget: "list",
+                    fields: [
+                      { label: "Ürün Adı", name: "isim", widget: "string" },
+                      { label: "Kategori", name: "kategori", widget: "select", options: [
+                        { label: "Seramik", value: "seramik" },
+                        { label: "Tekstil", value: "tekstil" },
+                        { label: "Kağıt & Baskı", value: "kagit" }
+                      ]},
+                      { label: "Fiyat (₺)", name: "fiyat", widget: "number" },
+                      { label: "Görsel", name: "gorsel", widget: "image" },
+                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
+                      { label: "Rozet", name: "rozet", widget: "select", required: false, options: [
+                        { label: "Yok", value: "" },
+                        { label: "Yeni", value: "Yeni" },
+                        { label: "Son 2", value: "Son 2" },
+                        { label: "Son 1", value: "Son 1" },
+                        { label: "Tükendi", value: "Tükendi" }
+                      ]},
+                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "atolyeler",
+            label: "Atölyeler",
+            files: [
+              {
+                label: "Atölyeler Listesi",
+                name: "atolyeler_listesi",
+                file: "public/content/atolyeler.json",
+                fields: [
+                  {
+                    label: "Atölyeler",
+                    name: "atolyeler",
+                    widget: "list",
+                    fields: [
+                      { label: "Atölye Adı", name: "isim", widget: "string" },
+                      { label: "Açıklama", name: "aciklama", widget: "text" },
+                      { label: "Durum", name: "durum", widget: "select", options: [
+                        { label: "Kayıt Açık", value: "aktif" },
+                        { label: "Dolu", value: "dolu" },
+                        { label: "Yakında", value: "yakinda" }
+                      ]},
+                      { label: "Tarih / Program", name: "tarih", widget: "string" },
+                      { label: "Görsel", name: "gorsel", widget: "image" },
+                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
+                      {
+                        label: "Bilgiler", name: "bilgiler", widget: "list",
+                        fields: [
+                          { label: "Etiket", name: "etiket", widget: "string" },
+                          { label: "Değer", name: "deger", widget: "string" }
+                        ]
+                      },
+                      { label: "Ters Hizalama", name: "reverse", widget: "boolean", default: false },
+                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "yorumlar",
+            label: "Yorumlar",
+            files: [
+              {
+                label: "Yorumlar Listesi",
+                name: "yorumlar_listesi",
+                file: "public/content/yorumlar.json",
+                fields: [
+                  {
+                    label: "Yorumlar",
+                    name: "yorumlar",
+                    widget: "list",
+                    fields: [
+                      { label: "İsim", name: "isim", widget: "string" },
+                      { label: "Yorum Metni", name: "metin", widget: "text" },
+                      { label: "Yıldız (1-5)", name: "yildiz", widget: "number", default: 5, min: 1, max: 5 },
+                      { label: "Kart Stili", name: "stil", widget: "select", options: [
+                        { label: "Normal", value: "normal" },
+                        { label: "Alternatif (koyu)", value: "alt" }
+                      ]},
+                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "galeri",
+            label: "Galeri",
+            files: [
+              {
+                label: "Galeri Görselleri",
+                name: "galeri_listesi",
+                file: "public/content/galeri.json",
+                fields: [
+                  {
+                    label: "Görseller",
+                    name: "galeri",
+                    widget: "list",
+                    fields: [
+                      { label: "Görsel", name: "gorsel", widget: "image" },
+                      { label: "Alt Metni", name: "alt", widget: "string", required: false },
+                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "hakkimda",
+            label: "Hakkımda Sayfası",
+            files: [
+              {
+                label: "Biyografi",
+                name: "biyografi",
+                file: "public/content/hakkimda.json",
+                fields: [
+                  { label: "Başlık", name: "baslik", widget: "string" },
+                  { label: "Alt Başlık", name: "alt_baslik", widget: "string" },
+                  { label: "Profil Fotoğrafı", name: "profil_foto", widget: "image" },
+                  {
+                    label: "Paragraflar", name: "paragraflar", widget: "list",
+                    field: { label: "Paragraf", name: "paragraf", widget: "text" }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "atolye_galeri",
+            label: "Atölyeden Kareler",
+            files: [
+              {
+                label: "Fotoğraflar",
+                name: "fotograflar",
+                file: "public/content/atolye-galeri.json",
+                fields: [
+                  {
+                    label: "Fotoğraflar", name: "fotograflar", widget: "list",
+                    fields: [
+                      { label: "Görsel", name: "gorsel", widget: "image" },
+                      { label: "Alt Metni", name: "alt", widget: "string", required: false },
+                      { label: "Boyut", name: "boyut", widget: "select", options: [
+                        { label: "Normal", value: "normal" },
+                        { label: "Uzun (tall)", value: "tall" },
+                        { label: "Geniş (wide)", value: "wide" }
+                      ]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+    </script>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      // Decap CMS yüklendikten sonra inline config ile başlat
+      window.addEventListener("load", function () {
+        if (window.CMS && window.CMS_CONFIG) {
+          window.CMS.init({ config: window.CMS_CONFIG });
+        }
+      });
+    </script>
   </body>
 </html>
