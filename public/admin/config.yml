@@ -2,6 +2,8 @@ backend:
   name: github
   repo: yusfyamn/elif-nur-oztekin-portfolio
   branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
 media_folder: public/uploads
 public_folder: /uploads
