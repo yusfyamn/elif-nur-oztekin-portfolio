@@ -1,0 +1,127 @@
+body { background-color: var(--bg); }
+
+/* ── Bio ── */
+.bio-section {
+  display: grid;
+  grid-template-columns: 0.65fr 1fr;
+  gap: 5rem;
+  margin-bottom: 6rem;
+  padding-bottom: 5rem;
+  align-items: start;
+}
+
+.bio-img {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--card-bg);
+}
+
+.bio-title {
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--dark);
+  margin-bottom: 0.25rem;
+}
+
+.bio-sub {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 2rem;
+}
+
+.bio-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 2.5rem;
+}
+
+.bio-body p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--mid);
+}
+
+.bio-body p strong {
+  color: var(--dark);
+  font-weight: 500;
+}
+
+/* ── Brand links ── */
+.bio-brands {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.bio-brand-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left 0.25s ease;
+}
+
+.bio-brand-link:hover {
+  padding-left: 0.5rem;
+}
+
+.brand-name {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--dark);
+}
+
+.brand-desc {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .bio-section {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .bio-img {
+    position: static;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bio-title {
+    font-size: 1.15rem;
+  }
+
+  .bio-sub {
+    font-size: 0.75rem;
+  }
+
+  .bio-body p {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .brand-name {
+    font-size: 0.9rem;
+  }
+
+  .brand-desc {
+    font-size: 0.7rem;
+  }
+}

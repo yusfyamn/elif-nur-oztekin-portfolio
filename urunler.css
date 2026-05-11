@@ -1,0 +1,227 @@
+body { background-color: var(--bg); }
+
+.urunler-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.urunler-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.urunler-desc {
+  font-size: 0.9rem;
+  color: var(--mid);
+  line-height: 1.6;
+  max-width: 40ch;
+}
+
+/* ── Filter ── */
+.urunler-filter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-self: flex-end;
+}
+
+.filter-btn {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--bg);
+}
+
+/* ── Product Grid ── */
+.urun-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.urun-card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.urun-card.hidden {
+  display: none;
+}
+
+.urun-img {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  margin-bottom: 1rem;
+}
+
+.urun-img img {
+  transition: transform 0.6s ease;
+}
+
+.urun-card:hover .urun-img img {
+  transform: scale(1.05);
+}
+
+.urun-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--dark);
+  color: var(--bg);
+  padding: 0.25rem 0.5rem;
+}
+
+.urun-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.urun-kategori {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.urun-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--dark);
+  line-height: 1.3;
+}
+
+.urun-fiyat {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--dark);
+}
+
+/* ── Özel Sipariş card ── */
+.urun-card--siparis {
+  border: 1px solid var(--border);
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+}
+
+.urun-siparis-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  gap: 1rem;
+}
+
+.siparis-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.siparis-title {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--dark);
+}
+
+.siparis-btn {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dark);
+  border-bottom: 1px solid var(--dark);
+  padding-bottom: 1px;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+}
+
+.siparis-btn:hover {
+  opacity: 0.5;
+}
+
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .urun-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .urunler-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .urun-name {
+    font-size: 1rem;
+  }
+
+  .urun-fiyat {
+    font-size: 0.9rem;
+  }
+
+  .urun-kategori {
+    font-size: 0.7rem;
+  }
+
+  .siparis-title {
+    font-size: 1.05rem;
+  }
+
+  .siparis-label {
+    font-size: 0.7rem;
+  }
+
+  .filter-btn {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .urun-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .urunler-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,131 @@
+/* ── Hero ── */
+.hero {
+  position: relative;
+  width: 100%;
+  /* dvh: toolbar açık/kapalı durumuna göre dinamik güncellenir */
+  height: 100dvh;
+  /* svh fallback: dvh desteklenmeyen tarayıcılar için */
+  height: 100svh;
+  /* JS --vh custom prop fallback: en geniş uyumluluk */
+  height: calc(var(--vh, 1svh) * 100);
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100dvh;
+  height: 100svh;
+  height: calc(var(--vh, 1svh) * 100);
+  background-color: var(--dark);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  will-change: clip-path;
+  z-index: 0;
+}
+
+.hero-overlay a,
+.hero-overlay p {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.hero-overlay .counter {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  color: #fff;
+}
+
+.hero-overlay .counter h1 {
+  font-size: 4rem;
+  font-weight: 500;
+}
+
+.overlay-text-container {
+  position: absolute;
+  top: 5rem;
+  left: 2rem;
+  height: 2rem;
+  overflow: hidden;
+}
+
+.overlay-text-container .overlay-text {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(2rem);
+  will-change: transform;
+}
+
+.overlay-text-container .overlay-text p {
+  color: #fff;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.hero-images {
+  position: absolute;
+  top: 30%;
+  transform: translateY(-30%);
+  width: 100%;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 10vw;
+  will-change: gap;
+  z-index: 2;
+}
+
+.hero-images .img {
+  width: 10vw;
+  aspect-ratio: 5/7;
+  transform: translateY(50%) scale(0.5);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  opacity: 0;
+  will-change: opacity, transform, clip-path;
+}
+
+.hero-header {
+  position: absolute;
+  bottom: 2rem;
+  width: 100%;
+  z-index: -1;
+}
+
+.hero-header h1 {
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 15vw;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.hero-header h1 .word {
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+@media (max-width: 1024px) {
+  .hero-overlay .counter {
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .hero-images {
+    top: auto;
+    bottom: calc(20vw * 3 + 4.5rem);
+    transform: none;
+    padding: 0 0.5rem;
+    gap: 3vw;
+    z-index: 3;
+  }
+
+  .hero-images .img {
+    width: 28vw;
+  }
+}

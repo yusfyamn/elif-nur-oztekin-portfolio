@@ -1,0 +1,791 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+
+:root {
+  --bg: #fff;
+  --card-bg: #f5f3ef;
+  --dark: #0f0f0f;
+  --mid: #6b6b6b;
+  --border: #e5e2db;
+  --mono: "DM Mono", monospace;
+  --sans: "DM Sans", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ── Custom scrollbar — masaüstünde ince, mobilde gizli ── */
+@media (min-width: 1025px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #0f0f0f;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #333;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #0f0f0f transparent;
+  }
+}
+
+@media (max-width: 1024px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
+  }
+}
+
+html {
+  /* scroll-behavior: smooth — Lenis yönetiyor, native smooth Lenis ile çakışır */
+}
+
+
+body {
+  font-family: var(--sans);
+  color: var(--dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* iç sayfalar için arka plan */
+.page-content {
+  background-color: var(--bg);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Universal fixed nav (tüm sayfalarda) ── */
+.page-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.page-nav * {
+  pointer-events: auto;
+}
+
+.nav-logo a {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dark);
+  text-decoration: none;
+  mix-blend-mode: difference;
+  filter: invert(0);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.nav-logo.is-menu-open a {
+  color: #fff;
+  mix-blend-mode: normal;
+}
+
+.nav-logo-sub {
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dark);
+  text-decoration: none;
+  mix-blend-mode: difference;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-t {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.nav-t--clone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-105%);
+}
+
+.nav-links a:hover .nav-t:first-child {
+  transform: translateY(105%);
+}
+
+.nav-links a:hover .nav-t--clone {
+  transform: translateY(0);
+}
+
+/* ── Page wrapper ── */
+.page-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 9rem 2rem 6rem;
+}
+
+/* ── Section titles ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--border);
+}
+
+/* ── Footer ── */
+.site-footer {
+  border-top: none;
+  padding: 2.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  background-color: #0f0f0f;
+}
+
+.footer-brand {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.footer-brand strong {
+  display: block;
+  font-size: 0.8rem;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+
+/* ── Footer alt satır ── */
+.footer-bottom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-copy:hover {
+  color: #fff;
+}
+
+.footer-by {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-by:hover {
+  color: #fff;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Footer sosyal medya ── */
+.footer-social {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.footer-social a {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.footer-social a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #fff;
+  transition: width 0.25s ease;
+}
+
+.footer-social a:hover {
+  color: #fff;
+}
+
+.footer-social a:hover::after {
+  width: 100%;
+}
+
+/* ── İletişim bölümü (tüm sayfalarda ortak) ── */
+.iletisim-section {
+  margin-top: 5rem;
+  padding-top: 4rem;
+  margin-bottom: 2rem;
+}
+
+.iletisim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 5rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+.iletisim-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.iletisim-desc {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 2rem;
+}
+
+.iletisim-channels {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.iletisim-channels li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.channel-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.channel-value {
+  font-size: 0.85rem;
+  color: var(--dark);
+  transition: opacity 0.2s;
+}
+
+a.channel-value:hover {
+  opacity: 0.55;
+}
+
+.iletisim-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: var(--card-bg);
+  padding: 2.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-group label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  padding: 0.7rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dark);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #aaa;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--dark);
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.25' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  cursor: pointer;
+}
+
+.form-submit {
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.75rem;
+  background: var(--dark);
+  color: #fff;
+  border: 1px solid var(--dark);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.form-submit:hover {
+  background: transparent;
+  color: var(--dark);
+}
+
+.form-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-success {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--dark);
+  margin-top: -0.5rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .iletisim-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Hamburger butonu ── */
+.nav-burger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #111;
+  transition: color 0.3s ease;
+  z-index: 101;
+  position: relative;
+}
+
+.nav-burger.is-open {
+  color: #fff;
+}
+
+.burger-icon {
+  overflow: visible;
+}
+
+.burger-line {
+  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+
+.nav-burger.is-open .burger-line--top {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.nav-burger.is-open .burger-line--bot {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+/* ── Menü (masaüstü: sidebar, mobil: full-screen) ── */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 560px;
+  background: #0f0f0f;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  padding: 8rem 3rem 3rem;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1),
+              visibility 0s linear 0.65s;
+}
+
+.mobile-menu.is-active {
+  visibility: visible;
+  transform: translateX(0);
+  transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1),
+              visibility 0s linear 0s;
+}
+
+/* Overlay karartma — masaüstü sidebar için */
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.mobile-menu-backdrop.is-active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+@media (max-width: 1024px) {
+  .mobile-menu {
+    width: 100%;
+    padding: 8rem 2rem 3rem;
+    transform: none !important;
+    transition: none !important;
+    visibility: hidden;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .mobile-menu.is-active {
+    visibility: visible;
+  }
+
+  .mobile-menu-backdrop {
+    display: none;
+  }
+}
+
+.mobile-menu-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+}
+
+.mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.mobile-menu-links a {
+  font-family: var(--sans);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  width: fit-content;
+  text-align: right;
+  padding-bottom: 0.15em;
+  clip-path: inset(0 0 0 0);
+}
+
+.mobile-menu-links a.active {
+  opacity: 0.4;
+}
+
+.mobile-menu-links a .nav-t {
+  display: block;
+  color: #fff;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-menu-links a .nav-t--clone {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform: translateY(0);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-menu-links a:hover .nav-t:first-child {
+  transform: translateY(-100%);
+}
+
+.mobile-menu-links a:hover .nav-t--clone {
+  transform: translateY(-100%);
+}
+
+.mobile-menu-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  opacity: 0;
+  flex-wrap: wrap;
+}
+
+.mobile-menu-foot-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mobile-menu-foot-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.mobile-menu-foot-location {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.mobile-menu-foot-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+
+.mobile-menu-foot-links a {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-menu-foot-links a:hover {
+  color: #fff;
+}
+
+/* Masaüstünde nav-links gizli, hamburger görünür */
+.nav-links {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .page-content {
+    padding: 6rem 1rem 4rem;
+  }
+
+  .page-nav {
+    padding: 1.25rem 1rem;
+  }
+
+  /* İletişim bölümü */
+  .iletisim-title {
+    font-size: 1.25rem;
+  }
+
+  .iletisim-desc {
+    font-size: 0.9rem;
+  }
+
+  .channel-label {
+    font-size: 0.7rem;
+  }
+
+  .channel-value {
+    font-size: 0.9rem;
+  }
+
+  .iletisim-form {
+    padding: 1.5rem 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.7rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 1rem;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.75rem;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 2rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .footer-social {
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    font-size: 0.75rem;
+  }
+
+  .footer-brand strong {
+    font-size: 0.9rem;
+  }
+
+  .footer-copy,
+  .footer-by {
+    font-size: 0.7rem;
+  }
+
+  /* Footer alt satır mobil: copyright solda, SITE BY YAMAN sağda — politikalar altta */
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .footer-bottom > .footer-copy:first-child {
+    order: 1;
+    align-self: flex-start;
+  }
+
+  .footer-legal {
+    order: 3;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    justify-content: center;
+  }
+
+  .footer-by {
+    order: 2;
+    align-self: flex-end;
+    margin-top: -2rem;
+  }
+}

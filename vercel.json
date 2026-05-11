@@ -1,0 +1,29 @@
+{
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/home.html" },
+    { "source": "/anasayfa", "destination": "/home.html" },
+    { "source": "/urunler", "destination": "/urunler.html" },
+    { "source": "/atolyeler", "destination": "/atolyeler.html" },
+    { "source": "/hakkimda", "destination": "/hakkimda.html" },
+    { "source": "/galeri", "destination": "/galeri.html" },
+    { "source": "/iletisim", "destination": "/hakkimda.html" },
+    { "source": "/gizlilik", "destination": "/gizlilik.html" },
+    { "source": "/kullanim-kosullari", "destination": "/kullanim-kosullari.html" }
+  ]
+}

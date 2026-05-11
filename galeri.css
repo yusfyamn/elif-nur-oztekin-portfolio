@@ -1,0 +1,118 @@
+/* ── Galeri grid ── */
+.galeri-grid {
+  columns: 4;
+  column-gap: 0.75rem;
+}
+
+.galeri-item {
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  cursor: zoom-in;
+  position: relative;
+}
+
+.galeri-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.galeri-item:hover img {
+  transform: scale(1.04);
+}
+
+/* ── Lightbox ── */
+.galeri-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.galeri-lightbox.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.galeri-lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.galeri-lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s;
+  padding: 0.5rem;
+}
+
+.galeri-lightbox-close:hover {
+  color: #fff;
+}
+
+.galeri-lightbox-prev,
+.galeri-lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s;
+  padding: 1rem;
+}
+
+.galeri-lightbox-prev { left: 1rem; }
+.galeri-lightbox-next { right: 1rem; }
+
+.galeri-lightbox-prev:hover,
+.galeri-lightbox-next:hover {
+  color: #fff;
+}
+
+.galeri-lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .galeri-grid {
+    columns: 3;
+  }
+}
+
+@media (max-width: 640px) {
+  .galeri-grid {
+    columns: 2;
+    column-gap: 0.5rem;
+  }
+
+  .galeri-item {
+    margin-bottom: 0.5rem;
+  }
+}
