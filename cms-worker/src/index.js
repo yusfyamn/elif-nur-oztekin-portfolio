@@ -253,11 +253,11 @@ export default {
       const konu = typeof body.konu === "string" ? body.konu.trim() : "";
       const mesaj = typeof body.mesaj === "string" ? body.mesaj.trim() : "";
 
-      if (ad.length < 2 || ad.length > 120) return err("Ad geçersiz", 400, origin);
-      if (mesaj.length < 5 || mesaj.length > 8000) return err("Mesaj 5–8000 karakter olmalı", 400, origin);
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("E-posta geçersiz", 400, origin);
+      if (ad.length < 2 || ad.length > 120) return err("Ad ve soyad en az 2, en fazla 120 karakter olmalı.", 400, origin);
+      if (mesaj.length < 5 || mesaj.length > 8000) return err("Mesajın 5 ile 8000 karakter arasında olmalı.", 400, origin);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("Geçerli bir e-posta adresi gir.", 400, origin);
       const allowedKonu = new Set(["siparis", "ozel-siparis", "atolye", "ozel-atolye", "diger"]);
-      if (!allowedKonu.has(konu)) return err("Konu seçimi geçersiz", 400, origin);
+      if (!allowedKonu.has(konu)) return err("Lütfen listeden bir konu seç.", 400, origin);
 
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
       const rlKey = `rl:contact:${ip}`;

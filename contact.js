@@ -4,9 +4,28 @@ const KONU_LABEL = {
   siparis: "Ürün siparişi",
   "ozel-siparis": "Özel sipariş",
   atolye: "Atölye kaydı",
-  "ozel-atolye": "Özel/kurumsal atölye",
+  "ozel-atolye": "Özel / kurumsal atölye",
   diger: "Diğer",
 };
+
+const METIN = {
+  gonderiliyor: "Gönderiliyor…",
+  gonderildi: "Gönderildi",
+  gonder: "Gönder",
+  basariTam: "Teşekkürler; mesajın bize ulaştı. En kısa sürede seninle iletişime geçeceğiz.",
+  basariEpostaEksik:
+    "Mesajın kaydedildi. E-posta bildiriminde geçici bir sorun olmuş olabilir; yine de talebini gördük ve en kısa sürede dönüş yapacağız.",
+  agGenel: "Bağlantı kurulamadı. İnternetini kontrol edip biraz sonra yeniden dene.",
+  agKisa: "Gönderilemedi. Alanları kontrol edip tekrar dene.",
+};
+
+function kullaniciDostuHata(ham) {
+  const t = String(ham ?? "").trim();
+  if (t === "Failed to fetch") return METIN.agGenel;
+  if (/^HTTP\s+\d+$/i.test(t)) return METIN.agKisa;
+  if (t.length <= 52) return t;
+  return METIN.agKisa;
+}
 
 function buildFormSubmitPayload(data) {
   const ad = typeof data.ad === "string" ? data.ad.trim() : "";
@@ -17,12 +36,12 @@ function buildFormSubmitPayload(data) {
   const subject =
     typeof data._subject === "string" && data._subject.trim()
       ? data._subject.trim()
-      : "Yeni iletişim formu";
+      : "İletişim formu — elifnuroztekin.com";
   return {
     name: ad,
     email,
     _replyto: email,
-    _subject: `${subject} [${konuEtiket}]`,
+    _subject: `${subject} · ${konuEtiket}`,
     _captcha: "false",
     message: `Konu: ${konuEtiket}\n\n${mesaj}`,
   };
@@ -40,7 +59,7 @@ export function initContactForm() {
     event.preventDefault();
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Gönderiliyor…";
+    submitBtn.textContent = METIN.gonderiliyor;
     if (successMsg) successMsg.hidden = true;
 
     const raw = Object.fromEntries(new FormData(form));
@@ -75,11 +94,9 @@ export function initContactForm() {
         if (successMsg) {
           successMsg.hidden = false;
           successMsg.textContent =
-            useWorker && fallbackAction && !mailOk
-              ? "Mesajın kaydedildi. E-posta bildirimi şu an ulaşmadı; en kısa sürede yine de dönüş yapılır."
-              : "Mesajın alındı — yakında döneceğim.";
+            useWorker && fallbackAction && !mailOk ? METIN.basariEpostaEksik : METIN.basariTam;
         }
-        submitBtn.textContent = "Gönderildi ✓";
+        submitBtn.textContent = METIN.gonderildi;
         return;
       }
 
@@ -92,18 +109,12 @@ export function initContactForm() {
       }
       throw new Error(detail);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Ağ hatası";
-      const short =
-        msg === "Failed to fetch"
-          ? "Bağlantı hatası — engel veya ağ"
-          : msg.length > 40
-            ? `${msg.slice(0, 37)}…`
-            : msg;
-      submitBtn.textContent = short;
+      const ham = e instanceof Error ? e.message : METIN.agGenel;
+      submitBtn.textContent = kullaniciDostuHata(ham);
       submitBtn.disabled = false;
       setTimeout(() => {
-        submitBtn.textContent = "Gönder";
-      }, 4500);
+        submitBtn.textContent = METIN.gonder;
+      }, 5200);
     }
   });
 }
