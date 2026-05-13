@@ -1,0 +1,16 @@
+name = "elif-nur-oztekin-cms"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+account_id = "b2aea950282192a94c018bdc3185b482"
+
+[vars]
+SEED_ORIGIN = "https://www.elifnuroztekin.com"
+
+[[kv_namespaces]]
+binding = "CMS_CONTENT"
+id = "79cc3946ce8a4d9ab94424e60030f003"
+
+# R2 açıldığında: bucket oluştur, aşağıyı yorumdan çıkar
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "elif-nur-cms-media"

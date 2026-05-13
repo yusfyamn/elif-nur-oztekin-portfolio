@@ -28,6 +28,8 @@ const cleanUrlPlugin = {
 
 export default defineConfig({
   plugins: [cleanUrlPlugin],
+  /** Cloudflare Pages: VITE_CMS_API = https://…workers.dev (KV CMS Worker) */
+  envPrefix: ["VITE_"],
   build: {
     rollupOptions: {
       input: {

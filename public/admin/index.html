@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="cms-api" content="https://elif-nur-oztekin-cms.yusufyaman209.workers.dev" />
   <title>Yönetim Paneli — ELİF NUR ÖZTEKİN</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -371,13 +372,14 @@
 <div id="toast"></div>
 
 <script>
-// ─── CONFIG ─────────────────────────────────────────────────────────────────
-const WORKER = "https://elif-nur-oztekin-oauth.yusufyaman209.workers.dev";
+// ─── CONFIG (meta > varsayılan) GitHub yok — KV tabanlı CMS Worker ───────────
+const CMS_API = (
+  document.querySelector('meta[name="cms-api"]')?.getAttribute("content") || ""
+).trim() || "https://elif-nur-oztekin-cms.yusufyaman209.workers.dev";
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let jwtToken = localStorage.getItem("admin_jwt") || null;
 let data = {};
-let fileShas = {};
 let modalSaveFn = null;
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
@@ -396,39 +398,32 @@ async function api(method, path, body) {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwtToken}` },
   };
   if (body !== undefined) opts.body = JSON.stringify(body);
-  const res = await fetch(`${WORKER}${path}`, opts);
+  const res = await fetch(`${CMS_API}${path}`, opts);
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
   return json;
 }
 
-async function loadFile(filePath) {
-  const resp = await api("GET", `/api/file?path=${encodeURIComponent(filePath)}`);
-  fileShas[filePath] = resp.sha;
-  const decoded = atob(resp.content.replace(/\n/g, ""));
-  return JSON.parse(decoded);
+async function loadSlug(slug) {
+  return api("GET", `/api/admin/content/${slug}`);
 }
 
-async function saveFile(filePath, content, message) {
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
-  const resp = await api("PUT", "/api/file", {
-    filePath, content: encoded, message,
-    sha: fileShas[filePath] || undefined,
-  });
-  fileShas[filePath] = resp.sha;
+async function saveSlug(slug, content) {
+  await api("PUT", `/api/admin/content/${slug}`, content);
 }
 
-async function uploadImage(filePath, file) {
+async function uploadMedia(file) {
   const reader = new FileReader();
   const base64 = await new Promise((res, rej) => {
     reader.onload = () => res(reader.result.split(",")[1]);
     reader.onerror = rej;
     reader.readAsDataURL(file);
   });
-  // Mevcut sha'yı al (varsa)
-  let sha;
-  try { const r = await api("GET", `/api/file-sha?path=${encodeURIComponent(filePath)}`); sha = r.sha; } catch (_) {}
-  const resp = await api("POST", "/api/upload", { filePath, base64, sha });
+  const resp = await api("POST", "/api/upload", {
+    filename: file.name,
+    contentType: file.type || "application/octet-stream",
+    base64,
+  });
   return resp.url;
 }
 
@@ -445,7 +440,7 @@ async function doLogin() {
   if (!email || !password) { errEl.textContent = "Lütfen tüm alanları doldurun."; errEl.style.display = "block"; return; }
   btn.disabled = true; btn.textContent = "Giriş yapılıyor...";
   try {
-    const res = await fetch(`${WORKER}/login`, {
+    const res = await fetch(`${CMS_API}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -550,13 +545,9 @@ function bindImg(id) {
   inp.addEventListener("change", async e => {
     const file = e.target.files[0];
     if (!file) return;
-    const folder = inp.dataset.folder;
-    const ext = file.name.split(".").pop();
-    const fname = `${Date.now()}.${ext}`;
-    const path = folder ? `public/${folder}/${fname}` : `public/${fname}`;
     document.getElementById(`${id}-label`).textContent = "Yükleniyor...";
     try {
-      const url = await uploadImage(path, file);
+      const url = await uploadMedia(file);
       document.getElementById(`${id}-val`).value = url;
       const prev = document.getElementById(`${id}-preview`);
       prev.src = url; prev.style.display = "block";
@@ -572,7 +563,7 @@ function bindImg(id) {
 // ─── DUYURULAR ───────────────────────────────────────────────────────────────
 async function loadDuyurular() {
   document.getElementById("duyurular-list").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.duyurular = await loadFile("public/content/duyurular.json");
+  data.duyurular = await loadSlug("duyurular");
   renderDuyurular();
 }
 
@@ -617,7 +608,7 @@ window.editDuyuru = function(idx) {
     d.sira = parseInt(v("d-sira")) || 0;
     if (idx === -1) data.duyurular.duyurular.push(d);
     else data.duyurular.duyurular[idx] = d;
-    await saveFile("public/content/duyurular.json", data.duyurular, `content: duyuru - ${d.baslik}`);
+    await saveSlug("duyurular", data.duyurular);
     renderDuyurular(); toast("Duyuru kaydedildi");
   });
   setTimeout(() => bindImg("d-img"), 30);
@@ -626,7 +617,7 @@ window.editDuyuru = function(idx) {
 window.delDuyuru = async function(idx) {
   if (!confirm("Bu duyuruyu silmek istiyor musunuz?")) return;
   data.duyurular.duyurular.splice(idx, 1);
-  await saveFile("public/content/duyurular.json", data.duyurular, "content: duyuru silindi");
+  await saveSlug("duyurular", data.duyurular);
   renderDuyurular(); toast("Silindi");
 };
 
@@ -635,7 +626,7 @@ document.getElementById("duyuru-add-btn").addEventListener("click", () => editDu
 // ─── ÜRÜNLER ─────────────────────────────────────────────────────────────────
 async function loadUrunler() {
   document.getElementById("urunler-list").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.urunler = await loadFile("public/content/urunler.json");
+  data.urunler = await loadSlug("urunler");
   renderUrunler();
 }
 
@@ -694,7 +685,7 @@ window.editUrun = function(idx) {
     u.rozet = v("u-rozet"); u.sira = parseInt(v("u-sira")) || 0;
     if (idx === -1) data.urunler.urunler.push(u);
     else data.urunler.urunler[idx] = u;
-    await saveFile("public/content/urunler.json", data.urunler, `content: ürün - ${u.isim}`);
+    await saveSlug("urunler", data.urunler);
     renderUrunler(); toast("Ürün kaydedildi");
   });
   setTimeout(() => bindImg("u-img"), 30);
@@ -703,7 +694,7 @@ window.editUrun = function(idx) {
 window.delUrun = async function(idx) {
   if (!confirm("Bu ürünü silmek istiyor musunuz?")) return;
   data.urunler.urunler.splice(idx, 1);
-  await saveFile("public/content/urunler.json", data.urunler, "content: ürün silindi");
+  await saveSlug("urunler", data.urunler);
   renderUrunler(); toast("Silindi");
 };
 
@@ -712,7 +703,7 @@ document.getElementById("urun-add-btn").addEventListener("click", () => editUrun
 // ─── ATÖLYELER ───────────────────────────────────────────────────────────────
 async function loadAtolyeler() {
   document.getElementById("atolyeler-list").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.atolyeler = await loadFile("public/content/atolyeler.json");
+  data.atolyeler = await loadSlug("atolyeler");
   renderAtolyeler();
 }
 
@@ -787,7 +778,7 @@ window.editAtolye = function(idx) {
     a.bilgiler = Object.values(bilgMap).filter(b => b.etiket || b.deger);
     if (idx === -1) data.atolyeler.atolyeler.push(a);
     else data.atolyeler.atolyeler[idx] = a;
-    await saveFile("public/content/atolyeler.json", data.atolyeler, `content: atölye - ${a.isim}`);
+    await saveSlug("atolyeler", data.atolyeler);
     renderAtolyeler(); toast("Atölye kaydedildi");
   });
   setTimeout(() => bindImg("a-img"), 30);
@@ -805,7 +796,7 @@ window.addBilgi = function() {
 window.delAtolye = async function(idx) {
   if (!confirm("Bu atölyeyi silmek istiyor musunuz?")) return;
   data.atolyeler.atolyeler.splice(idx, 1);
-  await saveFile("public/content/atolyeler.json", data.atolyeler, "content: atölye silindi");
+  await saveSlug("atolyeler", data.atolyeler);
   renderAtolyeler(); toast("Silindi");
 };
 
@@ -814,7 +805,7 @@ document.getElementById("atolye-add-btn").addEventListener("click", () => editAt
 // ─── YORUMLAR ────────────────────────────────────────────────────────────────
 async function loadYorumlar() {
   document.getElementById("yorumlar-list").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.yorumlar = await loadFile("public/content/yorumlar.json");
+  data.yorumlar = await loadSlug("yorumlar");
   renderYorumlar();
 }
 
@@ -859,7 +850,7 @@ window.editYorum = function(idx) {
     y.sira = parseInt(v("y-sira")) || 0;
     if (idx === -1) data.yorumlar.yorumlar.push(y);
     else data.yorumlar.yorumlar[idx] = y;
-    await saveFile("public/content/yorumlar.json", data.yorumlar, `content: yorum - ${y.isim}`);
+    await saveSlug("yorumlar", data.yorumlar);
     renderYorumlar(); toast("Yorum kaydedildi");
   });
 };
@@ -867,7 +858,7 @@ window.editYorum = function(idx) {
 window.delYorum = async function(idx) {
   if (!confirm("Bu yorumu silmek istiyor musunuz?")) return;
   data.yorumlar.yorumlar.splice(idx, 1);
-  await saveFile("public/content/yorumlar.json", data.yorumlar, "content: yorum silindi");
+  await saveSlug("yorumlar", data.yorumlar);
   renderYorumlar(); toast("Silindi");
 };
 
@@ -876,7 +867,7 @@ document.getElementById("yorum-add-btn").addEventListener("click", () => editYor
 // ─── GALERİ ──────────────────────────────────────────────────────────────────
 async function loadGaleri() {
   document.getElementById("galeri-grid").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.galeri = await loadFile("public/content/galeri.json");
+  data.galeri = await loadSlug("galeri");
   renderGaleri();
 }
 
@@ -895,10 +886,8 @@ function renderGaleri() {
   document.getElementById("galeri-file-input").addEventListener("change", async e => {
     const files = Array.from(e.target.files);
     for (const file of files) {
-      const ext = file.name.split(".").pop();
-      const fname = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       try {
-        const url = await uploadImage(`public/portfolio/${fname}`, file);
+        const url = await uploadMedia(file);
         data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
         toast(`${file.name} yüklendi`);
       } catch (e) { toast(`${file.name}: ${e.message}`, "error"); }
@@ -919,7 +908,7 @@ document.getElementById("galeri-save-btn").addEventListener("click", async () =>
   btn.disabled = true; btn.textContent = "Kaydediliyor...";
   try {
     data.galeri.galeri = data.galeri.galeri.map((g, i) => ({ ...g, sira: i + 1 }));
-    await saveFile("public/content/galeri.json", data.galeri, "content: galeri güncellendi");
+    await saveSlug("galeri", data.galeri);
     toast("Galeri kaydedildi");
   } catch (e) { toast(e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = "Kaydet"; }
@@ -929,7 +918,7 @@ document.getElementById("galeri-save-btn").addEventListener("click", async () =>
 async function loadHakkimda() {
   const wrap = document.getElementById("hakkimda-form-wrap");
   wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  data.hakkimda = await loadFile("public/content/hakkimda.json");
+  data.hakkimda = await loadSlug("hakkimda");
   renderHakkimda();
 }
 
@@ -970,7 +959,7 @@ document.getElementById("hakkimda-save-btn").addEventListener("click", async () 
     data.hakkimda.alt_baslik = v("h-altbaslik");
     data.hakkimda.profil_foto = v("h-img-val");
     data.hakkimda.paragraflar = Array.from(document.querySelectorAll("[data-para]")).map(t => t.value).filter(Boolean);
-    await saveFile("public/content/hakkimda.json", data.hakkimda, "content: hakkımda güncellendi");
+    await saveSlug("hakkimda", data.hakkimda);
     toast("Hakkımda kaydedildi");
   } catch (e) { toast(e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = "Kaydet"; }
@@ -983,7 +972,7 @@ function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").
 // ─── INIT ────────────────────────────────────────────────────────────────────
 if (jwtToken) {
   // Token var — doğrula (basit istek at)
-  api("GET", "/api/file?path=public/content/duyurular.json")
+  api("GET", "/api/admin/content/duyurular")
     .then(() => showApp())
     .catch(() => { localStorage.removeItem("admin_jwt"); jwtToken = null; showLogin(); });
 } else {
