@@ -1,7 +1,7 @@
 import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
-import { getDuyurular, getYorumlar } from "./content.js";
+import { getDuyurular, getUrunler, getYorumlar } from "./content.js";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { SplitText } from "gsap/SplitText";
@@ -51,10 +51,12 @@ const counterProgress = document.querySelector(".counter h1");
 const counter = { value: 0 };
 
 function initHeroAnimation() {
+  const isMobile = window.innerWidth <= 1024;
   const split = SplitText.create(".hero-header h1", {
-    type: "words",
-    mask: "words",
+    type: isMobile ? "lines" : "words",
+    mask: isMobile ? "lines" : "words",
     wordsClass: "word",
+    linesClass: "word",
   });
 
   const counterTl = gsap.timeline({ delay: 0.5 });

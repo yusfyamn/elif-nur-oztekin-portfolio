@@ -67,8 +67,9 @@ export function initMobileMenu() {
         </div>
         <div class="mobile-menu-foot-links">
           <a href="https://www.instagram.com/elifnuroztekin/" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer">Pinterest</a>
-          <a href="https://behance.net" target="_blank" rel="noopener noreferrer">Behance</a>
+          <a href="https://www.pinterest.com/elifnuroztekin/" target="_blank" rel="noopener noreferrer">Pinterest</a>
+          <a href="https://www.youtube.com/@elifnuroztekin" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="https://www.tiktok.com/@elifnuroztekin" target="_blank" rel="noopener noreferrer">TikTok</a>
         </div>
       </div>
     </div>
