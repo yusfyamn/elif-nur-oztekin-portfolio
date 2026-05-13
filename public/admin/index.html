@@ -1,242 +1,1102 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>İçerik Yönetimi — ELİF NUR ÖZTEKİN</title>
-    <script>
-      // config.yml yerine JS ile inline config — 404 riski yok
-      window.CMS_CONFIG = {
-        backend: {
-          name: "github",
-          repo: "yusfyamn/elif-nur-oztekin-portfolio",
-          branch: "main",
-          base_url: "https://elif-nur-oztekin-oauth.yusufyaman209.workers.dev",
-          auth_endpoint: "auth",
-        },
-        media_folder: "public/uploads",
-        public_folder: "/uploads",
-        locale: "tr",
-        collections: [
-          {
-            name: "duyurular",
-            label: "Duyurular",
-            files: [
-              {
-                label: "Duyurular Listesi",
-                name: "duyurular_listesi",
-                file: "public/content/duyurular.json",
-                fields: [
-                  {
-                    label: "Duyurular",
-                    name: "duyurular",
-                    widget: "list",
-                    fields: [
-                      { label: "Başlık", name: "baslik", widget: "string" },
-                      { label: "Etiket", name: "etiket", widget: "string" },
-                      { label: "Açıklama", name: "aciklama", widget: "text" },
-                      { label: "Görsel", name: "gorsel", widget: "image" },
-                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
-                      {
-                        label: "Link", name: "link", widget: "object",
-                        fields: [
-                          { label: "URL", name: "url", widget: "string" },
-                          { label: "Metin", name: "metin", widget: "string" }
-                        ]
-                      },
-                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "urunler",
-            label: "Ürünler",
-            files: [
-              {
-                label: "Ürünler Listesi",
-                name: "urunler_listesi",
-                file: "public/content/urunler.json",
-                fields: [
-                  {
-                    label: "Ürünler",
-                    name: "urunler",
-                    widget: "list",
-                    fields: [
-                      { label: "Ürün Adı", name: "isim", widget: "string" },
-                      { label: "Kategori", name: "kategori", widget: "select", options: [
-                        { label: "Seramik", value: "seramik" },
-                        { label: "Tekstil", value: "tekstil" },
-                        { label: "Kağıt & Baskı", value: "kagit" }
-                      ]},
-                      { label: "Fiyat (₺)", name: "fiyat", widget: "number" },
-                      { label: "Görsel", name: "gorsel", widget: "image" },
-                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
-                      { label: "Rozet", name: "rozet", widget: "select", required: false, options: [
-                        { label: "Yok", value: "" },
-                        { label: "Yeni", value: "Yeni" },
-                        { label: "Son 2", value: "Son 2" },
-                        { label: "Son 1", value: "Son 1" },
-                        { label: "Tükendi", value: "Tükendi" }
-                      ]},
-                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "atolyeler",
-            label: "Atölyeler",
-            files: [
-              {
-                label: "Atölyeler Listesi",
-                name: "atolyeler_listesi",
-                file: "public/content/atolyeler.json",
-                fields: [
-                  {
-                    label: "Atölyeler",
-                    name: "atolyeler",
-                    widget: "list",
-                    fields: [
-                      { label: "Atölye Adı", name: "isim", widget: "string" },
-                      { label: "Açıklama", name: "aciklama", widget: "text" },
-                      { label: "Durum", name: "durum", widget: "select", options: [
-                        { label: "Kayıt Açık", value: "aktif" },
-                        { label: "Dolu", value: "dolu" },
-                        { label: "Yakında", value: "yakinda" }
-                      ]},
-                      { label: "Tarih / Program", name: "tarih", widget: "string" },
-                      { label: "Görsel", name: "gorsel", widget: "image" },
-                      { label: "Görsel Alt Metni", name: "gorsel_alt", widget: "string", required: false },
-                      {
-                        label: "Bilgiler", name: "bilgiler", widget: "list",
-                        fields: [
-                          { label: "Etiket", name: "etiket", widget: "string" },
-                          { label: "Değer", name: "deger", widget: "string" }
-                        ]
-                      },
-                      { label: "Ters Hizalama", name: "reverse", widget: "boolean", default: false },
-                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "yorumlar",
-            label: "Yorumlar",
-            files: [
-              {
-                label: "Yorumlar Listesi",
-                name: "yorumlar_listesi",
-                file: "public/content/yorumlar.json",
-                fields: [
-                  {
-                    label: "Yorumlar",
-                    name: "yorumlar",
-                    widget: "list",
-                    fields: [
-                      { label: "İsim", name: "isim", widget: "string" },
-                      { label: "Yorum Metni", name: "metin", widget: "text" },
-                      { label: "Yıldız (1-5)", name: "yildiz", widget: "number", default: 5, min: 1, max: 5 },
-                      { label: "Kart Stili", name: "stil", widget: "select", options: [
-                        { label: "Normal", value: "normal" },
-                        { label: "Alternatif (koyu)", value: "alt" }
-                      ]},
-                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "galeri",
-            label: "Galeri",
-            files: [
-              {
-                label: "Galeri Görselleri",
-                name: "galeri_listesi",
-                file: "public/content/galeri.json",
-                fields: [
-                  {
-                    label: "Görseller",
-                    name: "galeri",
-                    widget: "list",
-                    fields: [
-                      { label: "Görsel", name: "gorsel", widget: "image" },
-                      { label: "Alt Metni", name: "alt", widget: "string", required: false },
-                      { label: "Sıra", name: "sira", widget: "number", default: 0 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "hakkimda",
-            label: "Hakkımda Sayfası",
-            files: [
-              {
-                label: "Biyografi",
-                name: "biyografi",
-                file: "public/content/hakkimda.json",
-                fields: [
-                  { label: "Başlık", name: "baslik", widget: "string" },
-                  { label: "Alt Başlık", name: "alt_baslik", widget: "string" },
-                  { label: "Profil Fotoğrafı", name: "profil_foto", widget: "image" },
-                  {
-                    label: "Paragraflar", name: "paragraflar", widget: "list",
-                    field: { label: "Paragraf", name: "paragraf", widget: "text" }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            name: "atolye_galeri",
-            label: "Atölyeden Kareler",
-            files: [
-              {
-                label: "Fotoğraflar",
-                name: "fotograflar",
-                file: "public/content/atolye-galeri.json",
-                fields: [
-                  {
-                    label: "Fotoğraflar", name: "fotograflar", widget: "list",
-                    fields: [
-                      { label: "Görsel", name: "gorsel", widget: "image" },
-                      { label: "Alt Metni", name: "alt", widget: "string", required: false },
-                      { label: "Boyut", name: "boyut", widget: "select", options: [
-                        { label: "Normal", value: "normal" },
-                        { label: "Uzun (tall)", value: "tall" },
-                        { label: "Geniş (wide)", value: "wide" }
-                      ]}
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      };
-    </script>
-  </head>
-  <body>
-    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
-    <script>
-      // Decap CMS yüklendikten sonra inline config ile başlat
-      window.addEventListener("load", function () {
-        if (window.CMS && window.CMS_CONFIG) {
-          window.CMS.init({ config: window.CMS_CONFIG });
-        }
-      });
-    </script>
-  </body>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Yönetim Paneli — ELİF NUR ÖZTEKİN</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: #e0ddd5;
+      --text: #1a1a18;
+      --muted: #888580;
+      --accent: #2d2d2a;
+      --accent-hover: #444440;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --sidebar-w: 220px;
+      --radius: 8px;
+      --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+    /* LOGIN */
+    #login-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; background: var(--bg);
+    }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 48px 40px; width: 360px;
+      box-shadow: var(--shadow); text-align: center;
+    }
+    .login-card h1 { font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .login-card p { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+    .btn-github {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #fff; border: none;
+      padding: 12px 24px; border-radius: var(--radius); cursor: pointer;
+      font-size: 14px; font-weight: 500; width: 100%; justify-content: center;
+      transition: background 0.15s;
+    }
+    .btn-github:hover { background: var(--accent-hover); }
+    .btn-github svg { flex-shrink: 0; }
+    .login-error { color: var(--danger); font-size: 13px; margin-top: 16px; display: none; }
+
+    /* APP SHELL */
+    #app { display: none; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; z-index: 100;
+    }
+    .sidebar-brand {
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+    }
+    .sidebar-brand strong { display: block; font-size: 13px; font-weight: 600; }
+    .sidebar-brand span { font-size: 11px; color: var(--muted); }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .nav-section { padding: 8px 16px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px; cursor: pointer; color: var(--text);
+      font-size: 13px; border-left: 2px solid transparent;
+      transition: all 0.1s; user-select: none;
+    }
+    .nav-item:hover { background: var(--bg); }
+    .nav-item.active { background: var(--bg); border-left-color: var(--accent); font-weight: 500; }
+    .nav-item svg { flex-shrink: 0; color: var(--muted); }
+    .nav-item.active svg { color: var(--accent); }
+    .sidebar-foot {
+      padding: 16px; border-top: 1px solid var(--border);
+    }
+    .btn-logout {
+      width: 100%; padding: 8px; background: none; border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; font-size: 12px; color: var(--muted);
+      transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* MAIN */
+    .main { margin-left: var(--sidebar-w); padding: 32px; min-height: 100vh; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* PAGE HEADER */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .page-header h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+    .page-header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: var(--radius); cursor: pointer;
+      font-size: 13px; font-weight: 500; border: none; transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn-danger { background: #fdf0ef; color: var(--danger); border: 1px solid #f5c6c2; }
+    .btn-danger:hover { background: #fae0de; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* CARD */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+
+    /* FORM */
+    .form-grid { display: grid; gap: 20px; }
+    .form-grid-2 { grid-template-columns: 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 14px; color: var(--text); background: var(--bg);
+      transition: border-color 0.15s; outline: none; font-family: inherit;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--accent); background: var(--surface);
+    }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    /* ITEM LIST */
+    .item-list { display: flex; flex-direction: column; gap: 1px; }
+    .item-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; background: var(--surface);
+      border-bottom: 1px solid var(--border); transition: background 0.1s;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-row:hover { background: var(--bg); }
+    .item-thumb {
+      width: 48px; height: 48px; border-radius: 6px; object-fit: cover;
+      background: var(--bg); border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .item-info { flex: 1; min-width: 0; }
+    .item-info strong { display: block; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-info span { font-size: 12px; color: var(--muted); }
+    .item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* BADGE */
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 100px;
+      font-size: 11px; font-weight: 500;
+    }
+    .badge-green { background: #e8f5e9; color: #2e7d32; }
+    .badge-red { background: #fde8e7; color: #c0392b; }
+    .badge-gray { background: #f0f0ee; color: #666; }
+    .badge-blue { background: #e8f0fe; color: #1a73e8; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px;
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal {
+      background: var(--surface); border-radius: 12px;
+      width: 100%; max-width: 640px; max-height: 90vh;
+      display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 600; }
+    .modal-close {
+      width: 28px; height: 28px; border: none; background: var(--bg);
+      border-radius: 6px; cursor: pointer; font-size: 16px; color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+    .modal-footer {
+      padding: 16px 24px; border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    /* IMAGE UPLOAD */
+    .img-upload {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s;
+      position: relative;
+    }
+    .img-upload:hover { border-color: var(--accent); background: var(--bg); }
+    .img-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .img-upload img { max-height: 120px; max-width: 100%; border-radius: 4px; display: block; margin: 0 auto 8px; }
+    .img-upload p { font-size: 12px; color: var(--muted); }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: var(--accent); color: #fff; padding: 12px 20px;
+      border-radius: var(--radius); font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2); transform: translateY(20px);
+      opacity: 0; transition: all 0.25s; pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.error { background: var(--danger); }
+
+    /* LOADING */
+    .spinner {
+      width: 20px; height: 20px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 60px; color: var(--muted); }
+
+    /* RESPONSIVE HELPERS */
+    .flex { display: flex; }
+    .gap-2 { gap: 8px; }
+    .mt-4 { margin-top: 16px; }
+    .mt-6 { margin-top: 24px; }
+
+    /* GALERI GRID */
+    .galeri-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;
+    }
+    .galeri-item {
+      position: relative; aspect-ratio: 1; border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--border); cursor: pointer;
+      background: var(--bg);
+    }
+    .galeri-item img { width: 100%; height: 100%; object-fit: cover; }
+    .galeri-item .galeri-del {
+      position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
+      background: rgba(0,0,0,0.6); border: none; border-radius: 4px;
+      color: #fff; font-size: 14px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s;
+    }
+    .galeri-item:hover .galeri-del { opacity: 1; }
+    .galeri-add {
+      aspect-ratio: 1; border: 2px dashed var(--border); border-radius: var(--radius);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted); font-size: 12px; gap: 6px;
+      transition: all 0.15s; position: relative; background: var(--surface);
+    }
+    .galeri-add:hover { border-color: var(--accent); color: var(--accent); }
+    .galeri-add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    /* BILGI ROWS */
+    .bilgi-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .bilgi-row input { flex: 1; }
+    .bilgi-row button { flex-shrink: 0; }
+
+    /* PARAGRAF ROWS */
+    .para-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+    .para-row textarea { flex: 1; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>ELİF NUR ÖZTEKİN</h1>
+    <p>Yönetim paneline erişmek için<br>GitHub hesabınızla giriş yapın.</p>
+    <button class="btn-github" id="login-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub ile Giriş Yap
+    </button>
+    <p class="login-error" id="login-error"></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <strong>ELİF NUR ÖZTEKİN</strong>
+      <span>Yönetim Paneli</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">İçerik</div>
+      <div class="nav-item active" data-page="duyurular">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        Duyurular
+      </div>
+      <div class="nav-item" data-page="urunler">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Ürünler
+      </div>
+      <div class="nav-item" data-page="atolyeler">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Atölyeler
+      </div>
+      <div class="nav-item" data-page="yorumlar">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Yorumlar
+      </div>
+      <div class="nav-section" style="margin-top:8px">Medya</div>
+      <div class="nav-item" data-page="galeri">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Galeri
+      </div>
+      <div class="nav-section" style="margin-top:8px">Sayfa</div>
+      <div class="nav-item" data-page="hakkimda">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>
+        Hakkımda
+      </div>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="btn-logout" id="logout-btn">Çıkış Yap</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- DUYURULAR -->
+    <div class="page active" id="page-duyurular">
+      <div class="page-header">
+        <div><h2>Duyurular</h2><p>Ana sayfa duyuru kartları</p></div>
+        <button class="btn btn-primary" id="duyuru-add-btn">+ Yeni Ekle</button>
+      </div>
+      <div class="card"><div class="item-list" id="duyurular-list"><div class="loading-state"><div class="spinner"></div> Yükleniyor...</div></div></div>
+    </div>
+
+    <!-- URUNLER -->
+    <div class="page" id="page-urunler">
+      <div class="page-header">
+        <div><h2>Ürünler</h2><p>Ürün slider kartları</p></div>
+        <button class="btn btn-primary" id="urun-add-btn">+ Yeni Ekle</button>
+      </div>
+      <div class="card"><div class="item-list" id="urunler-list"><div class="loading-state"><div class="spinner"></div> Yükleniyor...</div></div></div>
+    </div>
+
+    <!-- ATOLYELER -->
+    <div class="page" id="page-atolyeler">
+      <div class="page-header">
+        <div><h2>Atölyeler</h2><p>Atölye programları</p></div>
+        <button class="btn btn-primary" id="atolye-add-btn">+ Yeni Ekle</button>
+      </div>
+      <div class="card"><div class="item-list" id="atolyeler-list"><div class="loading-state"><div class="spinner"></div> Yükleniyor...</div></div></div>
+    </div>
+
+    <!-- YORUMLAR -->
+    <div class="page" id="page-yorumlar">
+      <div class="page-header">
+        <div><h2>Yorumlar</h2><p>Müşteri yorumları</p></div>
+        <button class="btn btn-primary" id="yorum-add-btn">+ Yeni Ekle</button>
+      </div>
+      <div class="card"><div class="item-list" id="yorumlar-list"><div class="loading-state"><div class="spinner"></div> Yükleniyor...</div></div></div>
+    </div>
+
+    <!-- GALERİ -->
+    <div class="page" id="page-galeri">
+      <div class="page-header">
+        <div><h2>Galeri</h2><p>Portfolio görselleri</p></div>
+        <button class="btn btn-primary" id="galeri-save-btn">Kaydet</button>
+      </div>
+      <div class="card" style="padding:24px">
+        <div class="galeri-grid" id="galeri-grid"><div class="loading-state"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
+    <!-- HAKKIMDA -->
+    <div class="page" id="page-hakkimda">
+      <div class="page-header">
+        <div><h2>Hakkımda</h2><p>Biyografi sayfası</p></div>
+        <button class="btn btn-primary" id="hakkimda-save-btn">Kaydet</button>
+      </div>
+      <div class="card" style="padding:24px" id="hakkimda-form-wrap">
+        <div class="loading-state"><div class="spinner"></div> Yükleniyor...</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Düzenle</h3>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="modal-cancel">İptal</button>
+      <button class="btn btn-primary" id="modal-save">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+const GITHUB_REPO = "yusfyamn/elif-nur-oztekin-portfolio";
+const GITHUB_BRANCH = "main";
+const OAUTH_WORKER = "https://elif-nur-oztekin-oauth.yusufyaman209.workers.dev";
+const GITHUB_CLIENT_ID = "Ov23liypXJxamloZ9Rsd";
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let token = localStorage.getItem("gh_token") || null;
+let currentPage = "duyurular";
+let data = {};
+let fileShas = {};
+let modalSave = null;
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function toast(msg, type = "success") {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = type === "error" ? "show error" : "show";
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = ""; }, 3000);
+}
+
+// ─── GITHUB API ──────────────────────────────────────────────────────────────
+async function ghFetch(path, opts = {}) {
+  const res = await fetch(`https://api.github.com${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      ...(opts.headers || {}),
+    },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API ${res.status}`);
+  }
+  return res.json();
+}
+
+async function loadFile(filePath) {
+  const data = await ghFetch(`/repos/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`);
+  fileShas[filePath] = data.sha;
+  return JSON.parse(atob(data.content.replace(/\n/g, "")));
+}
+
+async function saveFile(filePath, content, message) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+    branch: GITHUB_BRANCH,
+  };
+  if (fileShas[filePath]) body.sha = fileShas[filePath];
+  const res = await ghFetch(`/repos/${GITHUB_REPO}/contents/${filePath}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+  fileShas[filePath] = res.content.sha;
+  return res;
+}
+
+async function uploadImage(filePath, file) {
+  const reader = new FileReader();
+  const base64 = await new Promise((res, rej) => {
+    reader.onload = () => res(reader.result.split(",")[1]);
+    reader.onerror = rej;
+    reader.readAsDataURL(file);
+  });
+  // Check if file exists (to get sha)
+  try {
+    const existing = await ghFetch(`/repos/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`);
+    fileShas[filePath] = existing.sha;
+  } catch (_) {}
+  const body = {
+    message: `upload: ${filePath}`,
+    content: base64,
+    branch: GITHUB_BRANCH,
+  };
+  if (fileShas[filePath]) body.sha = fileShas[filePath];
+  await ghFetch(`/repos/${GITHUB_REPO}/contents/${filePath}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+  return `/${filePath.replace("public/", "")}`;
+}
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+function showApp() {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  loadPage(currentPage);
+}
+
+function showLogin() {
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+}
+
+document.getElementById("login-btn").addEventListener("click", () => {
+  const state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem("oauth_state", state);
+  const params = new URLSearchParams({
+    client_id: GITHUB_CLIENT_ID,
+    scope: "repo,user",
+    redirect_uri: `${OAUTH_WORKER}/callback`,
+    state,
+  });
+  const popup = window.open(
+    `https://github.com/login/oauth/authorize?${params}`,
+    "github-oauth",
+    "width=600,height=700,left=200,top=100"
+  );
+
+  const interval = setInterval(() => {
+    try {
+      if (popup && popup.closed) {
+        clearInterval(interval);
+        const saved = localStorage.getItem("gh_token");
+        if (saved) { token = saved; showApp(); }
+      }
+    } catch (_) {}
+  }, 500);
+});
+
+window.addEventListener("message", (e) => {
+  if (typeof e.data !== "string") return;
+  const match = e.data.match(/^authorization:github:success:(.+)$/);
+  if (match) {
+    try {
+      const parsed = JSON.parse(match[1]);
+      if (parsed.token) {
+        token = parsed.token;
+        localStorage.setItem("gh_token", token);
+        showApp();
+      }
+    } catch (_) {}
+  }
+});
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  token = null;
+  localStorage.removeItem("gh_token");
+  showLogin();
+});
+
+// ─── ROUTING ─────────────────────────────────────────────────────────────────
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const page = item.dataset.page;
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+    navigateTo(page);
+  });
+});
+
+function navigateTo(page) {
+  currentPage = page;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(`page-${page}`).classList.add("active");
+  loadPage(page);
+}
+
+async function loadPage(page) {
+  try {
+    if (page === "duyurular") await loadDuyurular();
+    else if (page === "urunler") await loadUrunler();
+    else if (page === "atolyeler") await loadAtolyeler();
+    else if (page === "yorumlar") await loadYorumlar();
+    else if (page === "galeri") await loadGaleri();
+    else if (page === "hakkimda") await loadHakkimda();
+  } catch (err) {
+    toast("Veri yüklenemedi: " + err.message, "error");
+  }
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(title, bodyHtml, onSave) {
+  document.getElementById("modal-title").textContent = title;
+  document.getElementById("modal-body").innerHTML = bodyHtml;
+  document.getElementById("modal-overlay").classList.remove("hidden");
+  modalSave = onSave;
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.add("hidden");
+  modalSave = null;
+}
+
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("modal-cancel").addEventListener("click", closeModal);
+document.getElementById("modal-overlay").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.getElementById("modal-save").addEventListener("click", async () => {
+  if (!modalSave) return;
+  const btn = document.getElementById("modal-save");
+  btn.disabled = true;
+  btn.textContent = "Kaydediliyor...";
+  try {
+    await modalSave();
+    closeModal();
+  } catch (err) {
+    toast(err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Kaydet";
+  }
+});
+
+// ─── IMAGE UPLOAD HELPER ─────────────────────────────────────────────────────
+function imgUploadWidget(id, currentSrc, folder) {
+  return `
+    <div class="img-upload" id="${id}-upload">
+      ${currentSrc ? `<img id="${id}-preview" src="${currentSrc}" alt="">` : `<img id="${id}-preview" src="" alt="" style="display:none">`}
+      <p id="${id}-label">${currentSrc ? "Değiştirmek için tıkla" : "Görsel yükle"}</p>
+      <input type="file" accept="image/*" id="${id}-file" data-folder="${folder}">
+      <input type="hidden" id="${id}-val" value="${currentSrc || ""}">
+    </div>`;
+}
+
+function bindImgUpload(id) {
+  const fileInput = document.getElementById(`${id}-file`);
+  if (!fileInput) return;
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const folder = fileInput.dataset.folder;
+    const ext = file.name.split(".").pop();
+    const name = `${Date.now()}.${ext}`;
+    const path = `public/${folder}/${name}`;
+    const label = document.getElementById(`${id}-label`);
+    label.textContent = "Yükleniyor...";
+    try {
+      const url = await uploadImage(path, file);
+      document.getElementById(`${id}-val`).value = url;
+      const preview = document.getElementById(`${id}-preview`);
+      preview.src = url;
+      preview.style.display = "block";
+      label.textContent = "Değiştirmek için tıkla";
+      toast("Görsel yüklendi");
+    } catch (err) {
+      label.textContent = "Yükleme başarısız";
+      toast(err.message, "error");
+    }
+  });
+}
+
+// ─── DUYURULAR ───────────────────────────────────────────────────────────────
+async function loadDuyurular() {
+  const list = document.getElementById("duyurular-list");
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.duyurular = await loadFile("public/content/duyurular.json");
+  renderDuyurular();
+}
+
+function renderDuyurular() {
+  const list = document.getElementById("duyurular-list");
+  const items = data.duyurular.duyurular;
+  if (!items.length) { list.innerHTML = '<div class="loading-state">Henüz duyuru yok.</div>'; return; }
+  list.innerHTML = items.map((d, i) => `
+    <div class="item-row">
+      <img class="item-thumb" src="${d.gorsel || ""}" alt="" onerror="this.style.display='none'">
+      <div class="item-info">
+        <strong>${d.baslik}</strong>
+        <span><span class="badge badge-blue">${d.etiket}</span> &nbsp;${d.aciklama.slice(0,60)}...</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editDuyuru(${i})">Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteDuyuru(${i})">Sil</button>
+      </div>
+    </div>`).join("");
+}
+
+window.editDuyuru = function(i) {
+  const d = i === -1 ? { baslik:"", etiket:"", aciklama:"", gorsel:"", gorsel_alt:"", link:{url:"",metin:""}, sira: data.duyurular.duyurular.length+1 } : {...data.duyurular.duyurular[i]};
+  openModal(i === -1 ? "Yeni Duyuru" : "Duyuru Düzenle", `
+    <div class="form-grid">
+      <div class="form-group"><label>Başlık</label><input id="d-baslik" value="${d.baslik}"></div>
+      <div class="form-group"><label>Etiket</label><input id="d-etiket" value="${d.etiket}"></div>
+      <div class="form-group"><label>Açıklama</label><textarea id="d-aciklama">${d.aciklama}</textarea></div>
+      <div class="form-group"><label>Görsel</label>${imgUploadWidget("d-img", d.gorsel, "urunler")}</div>
+      <div class="form-group"><label>Görsel Alt Metni</label><input id="d-gorsel-alt" value="${d.gorsel_alt||""}"></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Link URL</label><input id="d-link-url" value="${d.link?.url||""}"></div>
+        <div class="form-group"><label>Link Metni</label><input id="d-link-metin" value="${d.link?.metin||""}"></div>
+      </div>
+      <div class="form-group"><label>Sıra</label><input type="number" id="d-sira" value="${d.sira}"></div>
+    </div>`, async () => {
+    bindImgUpload("d-img");
+    d.baslik = document.getElementById("d-baslik").value;
+    d.etiket = document.getElementById("d-etiket").value;
+    d.aciklama = document.getElementById("d-aciklama").value;
+    d.gorsel = document.getElementById("d-img-val").value;
+    d.gorsel_alt = document.getElementById("d-gorsel-alt").value;
+    d.link = { url: document.getElementById("d-link-url").value, metin: document.getElementById("d-link-metin").value };
+    d.sira = parseInt(document.getElementById("d-sira").value) || 0;
+    if (i === -1) data.duyurular.duyurular.push(d);
+    else data.duyurular.duyurular[i] = d;
+    await saveFile("public/content/duyurular.json", data.duyurular, `content: duyuru güncellendi - ${d.baslik}`);
+    renderDuyurular();
+    toast("Duyuru kaydedildi");
+  });
+  setTimeout(() => bindImgUpload("d-img"), 50);
+};
+
+window.deleteDuyuru = async function(i) {
+  if (!confirm("Bu duyuruyu silmek istediğinizden emin misiniz?")) return;
+  data.duyurular.duyurular.splice(i, 1);
+  await saveFile("public/content/duyurular.json", data.duyurular, "content: duyuru silindi");
+  renderDuyurular();
+  toast("Silindi");
+};
+
+document.getElementById("duyuru-add-btn").addEventListener("click", () => editDuyuru(-1));
+
+// ─── ÜRÜNLER ─────────────────────────────────────────────────────────────────
+async function loadUrunler() {
+  const list = document.getElementById("urunler-list");
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.urunler = await loadFile("public/content/urunler.json");
+  renderUrunler();
+}
+
+function renderUrunler() {
+  const list = document.getElementById("urunler-list");
+  const items = data.urunler.urunler;
+  const rozetClass = { "Yeni":"badge-green","Son 2":"badge-blue","Son 1":"badge-red","Tükendi":"badge-gray" };
+  list.innerHTML = items.map((u, i) => `
+    <div class="item-row">
+      <img class="item-thumb" src="${u.gorsel||""}" alt="" onerror="this.style.display='none'">
+      <div class="item-info">
+        <strong>${u.isim}</strong>
+        <span>${u.kategori} — ₺${u.fiyat} ${u.rozet ? `<span class="badge ${rozetClass[u.rozet]||"badge-gray"}">${u.rozet}</span>` : ""}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editUrun(${i})">Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteUrun(${i})">Sil</button>
+      </div>
+    </div>`).join("");
+}
+
+window.editUrun = function(i) {
+  const u = i === -1 ? { isim:"", kategori:"seramik", fiyat:0, gorsel:"", gorsel_alt:"", rozet:"", sira: data.urunler.urunler.length+1 } : {...data.urunler.urunler[i]};
+  openModal(i === -1 ? "Yeni Ürün" : "Ürün Düzenle", `
+    <div class="form-grid">
+      <div class="form-group"><label>Ürün Adı</label><input id="u-isim" value="${u.isim}"></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Kategori</label>
+          <select id="u-kategori">
+            <option value="seramik" ${u.kategori==="seramik"?"selected":""}>Seramik</option>
+            <option value="tekstil" ${u.kategori==="tekstil"?"selected":""}>Tekstil</option>
+            <option value="kagit" ${u.kategori==="kagit"?"selected":""}>Kağıt & Baskı</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Fiyat (₺)</label><input type="number" id="u-fiyat" value="${u.fiyat}"></div>
+      </div>
+      <div class="form-group"><label>Görsel</label>${imgUploadWidget("u-img", u.gorsel, "urunler")}</div>
+      <div class="form-group"><label>Görsel Alt Metni</label><input id="u-gorsel-alt" value="${u.gorsel_alt||""}"></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Rozet</label>
+          <select id="u-rozet">
+            <option value="" ${!u.rozet?"selected":""}>Yok</option>
+            <option value="Yeni" ${u.rozet==="Yeni"?"selected":""}>Yeni</option>
+            <option value="Son 2" ${u.rozet==="Son 2"?"selected":""}>Son 2</option>
+            <option value="Son 1" ${u.rozet==="Son 1"?"selected":""}>Son 1</option>
+            <option value="Tükendi" ${u.rozet==="Tükendi"?"selected":""}>Tükendi</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Sıra</label><input type="number" id="u-sira" value="${u.sira}"></div>
+      </div>
+    </div>`, async () => {
+    u.isim = document.getElementById("u-isim").value;
+    u.kategori = document.getElementById("u-kategori").value;
+    u.fiyat = parseFloat(document.getElementById("u-fiyat").value) || 0;
+    u.gorsel = document.getElementById("u-img-val").value;
+    u.gorsel_alt = document.getElementById("u-gorsel-alt").value;
+    u.rozet = document.getElementById("u-rozet").value;
+    u.sira = parseInt(document.getElementById("u-sira").value) || 0;
+    if (i === -1) data.urunler.urunler.push(u);
+    else data.urunler.urunler[i] = u;
+    await saveFile("public/content/urunler.json", data.urunler, `content: ürün güncellendi - ${u.isim}`);
+    renderUrunler();
+    toast("Ürün kaydedildi");
+  });
+  setTimeout(() => bindImgUpload("u-img"), 50);
+};
+
+window.deleteUrun = async function(i) {
+  if (!confirm("Bu ürünü silmek istiyor musunuz?")) return;
+  data.urunler.urunler.splice(i, 1);
+  await saveFile("public/content/urunler.json", data.urunler, "content: ürün silindi");
+  renderUrunler();
+  toast("Silindi");
+};
+
+document.getElementById("urun-add-btn").addEventListener("click", () => editUrun(-1));
+
+// ─── ATÖLYELER ───────────────────────────────────────────────────────────────
+async function loadAtolyeler() {
+  const list = document.getElementById("atolyeler-list");
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.atolyeler = await loadFile("public/content/atolyeler.json");
+  renderAtolyeler();
+}
+
+function renderAtolyeler() {
+  const list = document.getElementById("atolyeler-list");
+  const items = data.atolyeler.atolyeler;
+  const durumBadge = { aktif:"badge-green", dolu:"badge-red", yakinda:"badge-blue" };
+  const durumLabel = { aktif:"Kayıt Açık", dolu:"Dolu", yakinda:"Yakında" };
+  list.innerHTML = items.map((a, i) => `
+    <div class="item-row">
+      <img class="item-thumb" src="${a.gorsel||""}" alt="" onerror="this.style.display='none'">
+      <div class="item-info">
+        <strong>${a.isim}</strong>
+        <span>${a.tarih} &nbsp;<span class="badge ${durumBadge[a.durum]||"badge-gray"}">${durumLabel[a.durum]||a.durum}</span></span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editAtolye(${i})">Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAtolye(${i})">Sil</button>
+      </div>
+    </div>`).join("");
+}
+
+window.editAtolye = function(i) {
+  const a = i === -1 ? { isim:"", aciklama:"", durum:"aktif", tarih:"", gorsel:"", gorsel_alt:"", bilgiler:[], reverse:false, sira:data.atolyeler.atolyeler.length+1 } : JSON.parse(JSON.stringify(data.atolyeler.atolyeler[i]));
+  const bilgilerHtml = (a.bilgiler||[]).map((b,bi) => `
+    <div class="bilgi-row" id="bilgi-${bi}">
+      <input placeholder="Etiket" value="${b.etiket||""}" data-bilgi="${bi}" data-field="etiket">
+      <input placeholder="Değer" value="${b.deger||""}" data-bilgi="${bi}" data-field="deger">
+      <button class="btn btn-danger btn-sm" onclick="removeBilgi(${bi})">✕</button>
+    </div>`).join("");
+  openModal(i === -1 ? "Yeni Atölye" : "Atölye Düzenle", `
+    <div class="form-grid">
+      <div class="form-group"><label>Atölye Adı</label><input id="a-isim" value="${a.isim}"></div>
+      <div class="form-group"><label>Açıklama</label><textarea id="a-aciklama">${a.aciklama}</textarea></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Durum</label>
+          <select id="a-durum">
+            <option value="aktif" ${a.durum==="aktif"?"selected":""}>Kayıt Açık</option>
+            <option value="dolu" ${a.durum==="dolu"?"selected":""}>Dolu</option>
+            <option value="yakinda" ${a.durum==="yakinda"?"selected":""}>Yakında</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Tarih / Program</label><input id="a-tarih" value="${a.tarih}"></div>
+      </div>
+      <div class="form-group"><label>Görsel</label>${imgUploadWidget("a-img", a.gorsel, "atolyeler")}</div>
+      <div class="form-group"><label>Görsel Alt Metni</label><input id="a-gorsel-alt" value="${a.gorsel_alt||""}"></div>
+      <div class="form-group">
+        <label>Bilgiler <button type="button" class="btn btn-secondary btn-sm" style="margin-left:8px" onclick="addBilgi()">+ Ekle</button></label>
+        <div id="bilgiler-wrap">${bilgilerHtml}</div>
+      </div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Ters Hizalama</label>
+          <select id="a-reverse">
+            <option value="false" ${!a.reverse?"selected":""}>Normal</option>
+            <option value="true" ${a.reverse?"selected":""}>Ters</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Sıra</label><input type="number" id="a-sira" value="${a.sira}"></div>
+      </div>
+    </div>`, async () => {
+    a.isim = document.getElementById("a-isim").value;
+    a.aciklama = document.getElementById("a-aciklama").value;
+    a.durum = document.getElementById("a-durum").value;
+    a.tarih = document.getElementById("a-tarih").value;
+    a.gorsel = document.getElementById("a-img-val").value;
+    a.gorsel_alt = document.getElementById("a-gorsel-alt").value;
+    a.reverse = document.getElementById("a-reverse").value === "true";
+    a.sira = parseInt(document.getElementById("a-sira").value) || 0;
+    a.bilgiler = [];
+    document.querySelectorAll("[data-bilgi]").forEach(inp => {
+      const bi = parseInt(inp.dataset.bilgi);
+      if (!a.bilgiler[bi]) a.bilgiler[bi] = { etiket:"", deger:"" };
+      a.bilgiler[bi][inp.dataset.field] = inp.value;
+    });
+    a.bilgiler = a.bilgiler.filter(Boolean);
+    if (i === -1) data.atolyeler.atolyeler.push(a);
+    else data.atolyeler.atolyeler[i] = a;
+    await saveFile("public/content/atolyeler.json", data.atolyeler, `content: atölye güncellendi - ${a.isim}`);
+    renderAtolyeler();
+    toast("Atölye kaydedildi");
+  });
+  setTimeout(() => bindImgUpload("a-img"), 50);
+};
+
+window.addBilgi = function() {
+  const wrap = document.getElementById("bilgiler-wrap");
+  const bi = wrap.children.length;
+  const div = document.createElement("div");
+  div.className = "bilgi-row";
+  div.id = `bilgi-${bi}`;
+  div.innerHTML = `<input placeholder="Etiket" value="" data-bilgi="${bi}" data-field="etiket"><input placeholder="Değer" value="" data-bilgi="${bi}" data-field="deger"><button class="btn btn-danger btn-sm" onclick="this.closest('.bilgi-row').remove()">✕</button>`;
+  wrap.appendChild(div);
+};
+
+window.removeBilgi = function(bi) {
+  document.getElementById(`bilgi-${bi}`)?.remove();
+};
+
+window.deleteAtolye = async function(i) {
+  if (!confirm("Bu atölyeyi silmek istiyor musunuz?")) return;
+  data.atolyeler.atolyeler.splice(i, 1);
+  await saveFile("public/content/atolyeler.json", data.atolyeler, "content: atölye silindi");
+  renderAtolyeler();
+  toast("Silindi");
+};
+
+document.getElementById("atolye-add-btn").addEventListener("click", () => editAtolye(-1));
+
+// ─── YORUMLAR ────────────────────────────────────────────────────────────────
+async function loadYorumlar() {
+  const list = document.getElementById("yorumlar-list");
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.yorumlar = await loadFile("public/content/yorumlar.json");
+  renderYorumlar();
+}
+
+function renderYorumlar() {
+  const list = document.getElementById("yorumlar-list");
+  const items = data.yorumlar.yorumlar;
+  list.innerHTML = items.map((y, i) => `
+    <div class="item-row">
+      <div class="item-info">
+        <strong>${y.isim} ${"★".repeat(y.yildiz)}</strong>
+        <span>${y.metin.slice(0,80)}...</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editYorum(${i})">Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteYorum(${i})">Sil</button>
+      </div>
+    </div>`).join("");
+}
+
+window.editYorum = function(i) {
+  const y = i === -1 ? { isim:"", metin:"", yildiz:5, stil:"normal", sira:data.yorumlar.yorumlar.length+1 } : {...data.yorumlar.yorumlar[i]};
+  openModal(i === -1 ? "Yeni Yorum" : "Yorum Düzenle", `
+    <div class="form-grid">
+      <div class="form-group"><label>İsim</label><input id="y-isim" value="${y.isim}"></div>
+      <div class="form-group"><label>Yorum Metni</label><textarea id="y-metin">${y.metin}</textarea></div>
+      <div class="form-grid form-grid-2">
+        <div class="form-group"><label>Yıldız (1-5)</label>
+          <select id="y-yildiz">
+            ${[1,2,3,4,5].map(n=>`<option value="${n}" ${y.yildiz===n?"selected":""}>${n}</option>`).join("")}
+          </select>
+        </div>
+        <div class="form-group"><label>Kart Stili</label>
+          <select id="y-stil">
+            <option value="normal" ${y.stil==="normal"?"selected":""}>Normal</option>
+            <option value="alt" ${y.stil==="alt"?"selected":""}>Alternatif (koyu)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Sıra</label><input type="number" id="y-sira" value="${y.sira}"></div>
+    </div>`, async () => {
+    y.isim = document.getElementById("y-isim").value;
+    y.metin = document.getElementById("y-metin").value;
+    y.yildiz = parseInt(document.getElementById("y-yildiz").value);
+    y.stil = document.getElementById("y-stil").value;
+    y.sira = parseInt(document.getElementById("y-sira").value) || 0;
+    if (i === -1) data.yorumlar.yorumlar.push(y);
+    else data.yorumlar.yorumlar[i] = y;
+    await saveFile("public/content/yorumlar.json", data.yorumlar, `content: yorum güncellendi - ${y.isim}`);
+    renderYorumlar();
+    toast("Yorum kaydedildi");
+  });
+};
+
+window.deleteYorum = async function(i) {
+  if (!confirm("Bu yorumu silmek istiyor musunuz?")) return;
+  data.yorumlar.yorumlar.splice(i, 1);
+  await saveFile("public/content/yorumlar.json", data.yorumlar, "content: yorum silindi");
+  renderYorumlar();
+  toast("Silindi");
+};
+
+document.getElementById("yorum-add-btn").addEventListener("click", () => editYorum(-1));
+
+// ─── GALERİ ──────────────────────────────────────────────────────────────────
+async function loadGaleri() {
+  const grid = document.getElementById("galeri-grid");
+  grid.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.galeri = await loadFile("public/content/galeri.json");
+  renderGaleri();
+}
+
+function renderGaleri() {
+  const grid = document.getElementById("galeri-grid");
+  const items = data.galeri.galeri;
+  grid.innerHTML = items.map((g, i) => `
+    <div class="galeri-item">
+      <img src="${g.gorsel}" alt="${g.alt||""}">
+      <button class="galeri-del" onclick="deleteGaleri(${i})">✕</button>
+    </div>`).join("") + `
+    <label class="galeri-add">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      <span>Görsel Ekle</span>
+      <input type="file" accept="image/*" multiple id="galeri-upload-input">
+    </label>`;
+  document.getElementById("galeri-upload-input").addEventListener("change", async (e) => {
+    const files = Array.from(e.target.files);
+    for (const file of files) {
+      const ext = file.name.split(".").pop();
+      const name = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `public/portfolio/${name}`;
+      try {
+        const url = await uploadImage(path, file);
+        data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
+        toast(`${file.name} yüklendi`);
+      } catch (err) {
+        toast(`${file.name}: ${err.message}`, "error");
+      }
+    }
+    renderGaleri();
+  });
+}
+
+window.deleteGaleri = function(i) {
+  if (!confirm("Bu görseli galeriden kaldırmak istiyor musunuz?")) return;
+  data.galeri.galeri.splice(i, 1);
+  renderGaleri();
+  toast("Görsel kaldırıldı (Kaydet butonuna basın)");
+};
+
+document.getElementById("galeri-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("galeri-save-btn");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+  try {
+    data.galeri.galeri = data.galeri.galeri.map((g, i) => ({ ...g, sira: i + 1 }));
+    await saveFile("public/content/galeri.json", data.galeri, "content: galeri güncellendi");
+    toast("Galeri kaydedildi");
+  } catch (err) { toast(err.message, "error"); }
+  finally { btn.disabled = false; btn.textContent = "Kaydet"; }
+});
+
+// ─── HAKKIMDA ────────────────────────────────────────────────────────────────
+async function loadHakkimda() {
+  const wrap = document.getElementById("hakkimda-form-wrap");
+  wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.hakkimda = await loadFile("public/content/hakkimda.json");
+  renderHakkimda();
+}
+
+function renderHakkimda() {
+  const wrap = document.getElementById("hakkimda-form-wrap");
+  const h = data.hakkimda;
+  const parasHtml = (h.paragraflar||[]).map((p,i) => `
+    <div class="para-row">
+      <textarea data-para="${i}" rows="3">${p}</textarea>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>
+    </div>`).join("");
+  wrap.innerHTML = `
+    <div class="form-grid">
+      <div class="form-group"><label>Başlık</label><input id="h-baslik" value="${h.baslik||""}"></div>
+      <div class="form-group"><label>Alt Başlık</label><input id="h-alt-baslik" value="${h.alt_baslik||""}"></div>
+      <div class="form-group"><label>Profil Fotoğrafı</label>${imgUploadWidget("h-img", h.profil_foto, "")}</div>
+      <div class="form-group">
+        <label>Paragraflar <button type="button" class="btn btn-secondary btn-sm" style="margin-left:8px" onclick="addParagraf()">+ Ekle</button></label>
+        <div id="paragraflar-wrap">${parasHtml}</div>
+      </div>
+    </div>`;
+  bindImgUpload("h-img");
+}
+
+window.addParagraf = function() {
+  const wrap = document.getElementById("paragraflar-wrap");
+  const i = wrap.children.length;
+  const div = document.createElement("div");
+  div.className = "para-row";
+  div.innerHTML = `<textarea data-para="${i}" rows="3"></textarea><button class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>`;
+  wrap.appendChild(div);
+};
+
+document.getElementById("hakkimda-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("hakkimda-save-btn");
+  btn.disabled = true; btn.textContent = "Kaydediliyor...";
+  try {
+    data.hakkimda.baslik = document.getElementById("h-baslik").value;
+    data.hakkimda.alt_baslik = document.getElementById("h-alt-baslik").value;
+    data.hakkimda.profil_foto = document.getElementById("h-img-val").value;
+    data.hakkimda.paragraflar = Array.from(document.querySelectorAll("[data-para]")).map(t => t.value).filter(Boolean);
+    await saveFile("public/content/hakkimda.json", data.hakkimda, "content: hakkımda güncellendi");
+    toast("Hakkımda sayfası kaydedildi");
+  } catch (err) { toast(err.message, "error"); }
+  finally { btn.disabled = false; btn.textContent = "Kaydet"; }
+});
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+if (token) {
+  // Token varsa doğrula
+  ghFetch("/user").then(() => showApp()).catch(() => {
+    localStorage.removeItem("gh_token");
+    token = null;
+    showLogin();
+  });
+} else {
+  showLogin();
+}
+</script>
+</body>
 </html>
