@@ -13,7 +13,8 @@
           repo: "yusfyamn/elif-nur-oztekin-portfolio",
           branch: "main",
           base_url: "https://elif-nur-oztekin-oauth.yusufyaman209.workers.dev",
-          auth_endpoint: "auth"
+          auth_endpoint: "auth",
+          auth_type: "pkce",
         },
         media_folder: "public/uploads",
         public_folder: "/uploads",
@@ -229,7 +230,7 @@
     </script>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
     <script>
       // Decap CMS yüklendikten sonra inline config ile başlat
       window.addEventListener("load", function () {
