@@ -12,9 +12,9 @@ const METIN = {
   gonderiliyor: "Gönderiliyor…",
   gonderildi: "Gönderildi",
   gonder: "Gönder",
-  basariTam: "Teşekkürler; mesajın bize ulaştı. En kısa sürede seninle iletişime geçeceğiz.",
+  basariTam: "Teşekkürler; mesajın bana ulaştı. En kısa sürede seninle iletişime geçeceğim.",
   basariEpostaEksik:
-    "Mesajın kaydedildi. E-posta bildiriminde geçici bir sorun olmuş olabilir; yine de talebini gördük ve en kısa sürede dönüş yapacağız.",
+    "Mesajın kaydedildi. E-posta bildiriminde geçici bir sorun olmuş olabilir; yine de talebini gördüm ve en kısa sürede dönüş yapacağım.",
   agGenel: "Bağlantı kurulamadı. İnternetini kontrol edip biraz sonra yeniden dene.",
   agKisa: "Gönderilemedi. Alanları kontrol edip tekrar dene.",
 };
