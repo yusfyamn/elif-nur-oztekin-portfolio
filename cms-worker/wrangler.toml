@@ -10,7 +10,7 @@ SEED_ORIGIN = "https://www.elifnuroztekin.com"
 binding = "CMS_CONTENT"
 id = "79cc3946ce8a4d9ab94424e60030f003"
 
-# R2 açıldığında: bucket oluştur, aşağıyı yorumdan çıkar
-# [[r2_buckets]]
-# binding = "MEDIA"
-# bucket_name = "elif-nur-cms-media"
+# Medya yüklemeleri (panel) — KV ~900KB yerine R2
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "elifnuroztekinincms"
