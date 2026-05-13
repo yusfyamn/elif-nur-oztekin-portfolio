@@ -57,8 +57,28 @@ export function initContactForm() {
       });
 
       if (response.ok) {
+        let mailOk = true;
+        if (useWorker && fallbackAction) {
+          try {
+            const mr = await fetch(fallbackAction, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify(buildFormSubmitPayload(raw)),
+            });
+            mailOk = mr.ok;
+          } catch {
+            mailOk = false;
+          }
+        }
+
         form.reset();
-        if (successMsg) successMsg.hidden = false;
+        if (successMsg) {
+          successMsg.hidden = false;
+          successMsg.textContent =
+            useWorker && fallbackAction && !mailOk
+              ? "Mesajın kaydedildi. E-posta bildirimi şu an ulaşmadı; en kısa sürede yine de dönüş yapılır."
+              : "Mesajın alındı — yakında döneceğim.";
+        }
         submitBtn.textContent = "Gönderildi ✓";
         return;
       }

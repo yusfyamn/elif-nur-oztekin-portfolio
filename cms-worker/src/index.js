@@ -231,9 +231,8 @@ export default {
     }
 
     const CONTACT_INBOX_KEY = "json:contact-inbox";
-    const FORMSUBMIT_TO = "https://formsubmit.co/ajax/elifnuroztekinn@gmail.com";
 
-    // ── Public iletişim formu (KV gelen kutusu + FormSubmit ile e-posta) ──
+    // ── Public iletişim formu (KV gelen kutusu) — e-posta tarayıcıdan FormSubmit ile ayrı gönderilir ──
     if (path === "/api/contact" && request.method === "POST") {
       if (origin && !isAllowedCorsOrigin(origin)) {
         return err("Origin izinli değil", 403, origin);
@@ -272,31 +271,6 @@ export default {
       const createdAt = Date.now();
       items.unshift({ id, createdAt, ad, email, konu, mesaj: mesaj.slice(0, 8000) });
       await env.CMS_CONTENT.put(CONTACT_INBOX_KEY, JSON.stringify({ items: items.slice(0, 250) }));
-
-      const konuEtiket = {
-        siparis: "Ürün siparişi",
-        "ozel-siparis": "Özel sipariş",
-        atolye: "Atölye kaydı",
-        "ozel-atolye": "Özel/kurumsal atölye",
-        diger: "Diğer",
-      }[konu] || konu;
-
-      try {
-        await fetch(FORMSUBMIT_TO, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            name: ad,
-            email,
-            _replyto: email,
-            _subject: `İletişim formu: ${konuEtiket}`,
-            _captcha: "false",
-            message: `Konu: ${konuEtiket}\n\n${mesaj}`,
-          }),
-        });
-      } catch {
-        /* e-posta başarısız olsa bile KV kaydı tutuldu */
-      }
 
       return json({ ok: true }, 200, origin);
     }
