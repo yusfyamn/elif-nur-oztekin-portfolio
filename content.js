@@ -2,7 +2,8 @@
 
 const PROD_CMS_DEFAULT = "https://elif-nur-oztekin-cms.yusufyaman209.workers.dev";
 
-const CMS_API = (() => {
+/** Worker kök URL (form gönderimi vb.); Vite için `VITE_CMS_API` */
+export function getCmsApiOrigin() {
   const fromEnv =
     typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_CMS_API;
   if (fromEnv) return String(fromEnv).replace(/\/$/, "");
@@ -11,7 +12,7 @@ const CMS_API = (() => {
     if (h === "www.elifnuroztekin.com" || h === "elifnuroztekin.com") return PROD_CMS_DEFAULT;
   }
   return "";
-})();
+}
 
 async function fetchJson(path) {
   const res = await fetch(path);
@@ -20,6 +21,7 @@ async function fetchJson(path) {
 }
 
 async function fetchCmsOrStatic(slug) {
+  const CMS_API = getCmsApiOrigin();
   if (CMS_API) {
     const url = `${CMS_API}/api/public/${slug}`;
     try {

@@ -125,7 +125,7 @@ function applyHomeOnly(site) {
   if (previewLink && h.previewAllLink) previewLink.textContent = h.previewAllLink;
 }
 
-function cacheBustSrc(url, ts) {
+export function cacheBustSrc(url, ts) {
   if (!url || typeof url !== "string") return url;
   if (url.startsWith("data:")) return url;
   const sep = url.includes("?") ? "&" : "?";

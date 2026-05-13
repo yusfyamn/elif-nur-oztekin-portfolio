@@ -217,6 +217,77 @@ export default {
       });
     }
 
+    const CONTACT_INBOX_KEY = "json:contact-inbox";
+    const FORMSUBMIT_TO = "https://formsubmit.co/ajax/elifnuroztekinn@gmail.com";
+
+    // ── Public iletişim formu (KV gelen kutusu + FormSubmit ile e-posta) ──
+    if (path === "/api/contact" && request.method === "POST") {
+      if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+        return err("Origin izinli değil", 403, origin);
+      }
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return err("Geçersiz JSON", 400, origin);
+      }
+      const honey = body._honey;
+      if (typeof honey === "string" && honey.trim() !== "") {
+        return json({ ok: true }, 200, origin);
+      }
+
+      const ad = typeof body.ad === "string" ? body.ad.trim() : "";
+      const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+      const konu = typeof body.konu === "string" ? body.konu.trim() : "";
+      const mesaj = typeof body.mesaj === "string" ? body.mesaj.trim() : "";
+
+      if (ad.length < 2 || ad.length > 120) return err("Ad geçersiz", 400, origin);
+      if (mesaj.length < 10 || mesaj.length > 8000) return err("Mesaj 10–8000 karakter olmalı", 400, origin);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("E-posta geçersiz", 400, origin);
+      const allowedKonu = new Set(["siparis", "ozel-siparis", "atolye", "ozel-atolye", "diger"]);
+      if (!allowedKonu.has(konu)) return err("Konu seçimi geçersiz", 400, origin);
+
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      const rlKey = `rl:contact:${ip}`;
+      const prev = Number((await env.CMS_CONTENT.get(rlKey)) || "0");
+      if (prev > 20) return err("Çok fazla deneme, lütfen daha sonra tekrar deneyin.", 429, origin);
+      await env.CMS_CONTENT.put(rlKey, String(prev + 1), { expirationTtl: 86_400 });
+
+      const inbox = (await env.CMS_CONTENT.get(CONTACT_INBOX_KEY, "json")) || { items: [] };
+      const items = Array.isArray(inbox.items) ? inbox.items : [];
+      const id = crypto.randomUUID();
+      const createdAt = Date.now();
+      items.unshift({ id, createdAt, ad, email, konu, mesaj: mesaj.slice(0, 8000) });
+      await env.CMS_CONTENT.put(CONTACT_INBOX_KEY, JSON.stringify({ items: items.slice(0, 250) }));
+
+      const konuEtiket = {
+        siparis: "Ürün siparişi",
+        "ozel-siparis": "Özel sipariş",
+        atolye: "Atölye kaydı",
+        "ozel-atolye": "Özel/kurumsal atölye",
+        diger: "Diğer",
+      }[konu] || konu;
+
+      try {
+        await fetch(FORMSUBMIT_TO, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name: ad,
+            email,
+            _replyto: email,
+            _subject: `İletişim formu: ${konuEtiket}`,
+            _captcha: "false",
+            message: `Konu: ${konuEtiket}\n\n${mesaj}`,
+          }),
+        });
+      } catch {
+        /* e-posta başarısız olsa bile KV kaydı tutuldu */
+      }
+
+      return json({ ok: true }, 200, origin);
+    }
+
     // ── Admin JSON ──
     const authPayload = await authenticate(request, env);
     if (!authPayload) return err("Yetkisiz", 401, origin);
@@ -245,6 +316,34 @@ export default {
         await env.CMS_CONTENT.put(kvJsonKey(slug), JSON.stringify(body));
         return json({ ok: true }, 200, origin);
       }
+    }
+
+    if (path === "/api/admin/contact-inbox" && request.method === "GET") {
+      const inbox = (await env.CMS_CONTENT.get(CONTACT_INBOX_KEY, "json")) || { items: [] };
+      return json(inbox, 200, origin);
+    }
+
+    if (path === "/api/admin/contact-inbox" && request.method === "PUT") {
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return err("Geçersiz JSON", 400, origin);
+      }
+      const items = Array.isArray(body.items) ? body.items : [];
+      const sanitized = items
+        .filter((x) => x && typeof x.id === "string")
+        .slice(0, 250)
+        .map((x) => ({
+          id: String(x.id).slice(0, 80),
+          createdAt: typeof x.createdAt === "number" ? x.createdAt : Date.now(),
+          ad: String(x.ad ?? "").slice(0, 200),
+          email: String(x.email ?? "").slice(0, 200),
+          konu: String(x.konu ?? "").slice(0, 80),
+          mesaj: String(x.mesaj ?? "").slice(0, 8000),
+        }));
+      await env.CMS_CONTENT.put(CONTACT_INBOX_KEY, JSON.stringify({ items: sanitized }));
+      return json({ ok: true }, 200, origin);
     }
 
     // ── Upload ──

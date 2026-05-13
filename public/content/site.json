@@ -72,6 +72,21 @@
       "/portfolio/5.webp",
       "/portfolio/4.webp"
     ],
+    "portfolioWaveImages": [
+      "/portfolio/1.webp",
+      "/portfolio/2.webp",
+      "/portfolio/3.webp",
+      "/portfolio/4.webp",
+      "/portfolio/5.webp",
+      "/portfolio/6.webp",
+      "/portfolio/7.webp",
+      "/portfolio/8.webp",
+      "/portfolio/9.webp",
+      "/portfolio/1.webp",
+      "/portfolio/2.webp",
+      "/portfolio/3.webp"
+    ],
+    "previewUrunSira": [1, 2, 3, 4],
     "preloadPortfolio": [
       "/portfolio/1.webp",
       "/portfolio/2.webp",

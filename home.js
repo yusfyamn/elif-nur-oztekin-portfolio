@@ -2,7 +2,7 @@ import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
 import { getDuyurular, getUrunler, getYorumlar } from "./content.js";
-import { ensureSite } from "./site-chrome.js";
+import { ensureSite, cacheBustSrc } from "./site-chrome.js";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { SplitText } from "gsap/SplitText";
@@ -223,7 +223,16 @@ const WAVE_CONFIG = {
 const TOTAL_IMAGES = 12;
 const ASPECT_RATIOS = ["3/4"];
 const IMAGE_WIDTH_VW = 0.28;
-const portfolyoSirasi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3];
+const DEFAULT_PORTFOLIO_SEQ = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3];
+const siteHome = window.__SITE__?.home;
+const configuredWave = Array.isArray(siteHome?.portfolioWaveImages) ? siteHome.portfolioWaveImages : null;
+const waveSrcs =
+  configuredWave &&
+  configuredWave.length === TOTAL_IMAGES &&
+  configuredWave.every((u) => typeof u === "string" && u.length > 0)
+    ? configuredWave
+    : DEFAULT_PORTFOLIO_SEQ.map((n) => `/portfolio/${n}.webp`);
+const siteUpdatedAt = window.__SITE__?.updatedAt;
 
 const container = document.getElementById("portfolyo-images");
 
@@ -232,7 +241,7 @@ for (let i = 0; i < TOTAL_IMAGES; i++) {
   item.classList.add("wave-image");
   item.style.aspectRatio = ASPECT_RATIOS[i % ASPECT_RATIOS.length];
   const img = document.createElement("img");
-  img.src = `/portfolio/${portfolyoSirasi[i]}.webp`;
+  img.src = cacheBustSrc(waveSrcs[i], siteUpdatedAt);
   img.alt = "";
   item.appendChild(img);
   container.appendChild(item);
@@ -458,6 +467,33 @@ function buildYorumCard(yorum) {
   return article;
 }
 
+function bindPreviewGridReveal(urunGrid) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cards = urunGrid.querySelectorAll("[data-reveal='card']");
+  if (!cards.length) return;
+  if (reducedMotion) {
+    gsap.set(cards, { opacity: 1 });
+    return;
+  }
+  gsap.set(cards, { opacity: 0, y: 48, scale: 0.97, willChange: "transform, opacity" });
+  ScrollTrigger.create({
+    trigger: urunGrid,
+    start: "top 88%",
+    once: true,
+    onEnter: () =>
+      gsap.to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.75,
+        stagger: 0.09,
+        ease: "power3.out",
+        clearProps: "will-change",
+      }),
+  });
+  requestAnimationFrame(() => ScrollTrigger.refresh());
+}
+
 // ── İçerik yükle ve DOM'u doldur ──────────────────────────
 async function loadContent() {
   const [duyurular, urunPreview, yorumlar] = await Promise.all([
@@ -468,10 +504,31 @@ async function loadContent() {
 
   initDuyuruSlider(duyurular);
 
+  const site = window.__SITE__ || {};
+  const siraPick = Array.isArray(site.home?.previewUrunSira) ? site.home.previewUrunSira : [1, 2, 3, 4];
+  const seen = new Set();
+  const chosen = [];
+  for (const s of siraPick) {
+    const u = urunPreview.find((x) => Number(x.sira) === Number(s));
+    if (u && !seen.has(Number(u.sira))) {
+      seen.add(Number(u.sira));
+      chosen.push(u);
+    }
+    if (chosen.length >= 4) break;
+  }
+  for (const u of urunPreview) {
+    if (chosen.length >= 4) break;
+    if (!seen.has(Number(u.sira))) {
+      seen.add(Number(u.sira));
+      chosen.push(u);
+    }
+  }
+
   const urunGrid = document.querySelector(".urunler-preview-grid");
   if (urunGrid) {
     urunGrid.innerHTML = "";
-    urunPreview.slice(0, 4).forEach((u) => urunGrid.appendChild(buildUrunPreviewCard(u)));
+    chosen.slice(0, 4).forEach((u) => urunGrid.appendChild(buildUrunPreviewCard(u)));
+    bindPreviewGridReveal(urunGrid);
   }
 
   const yorumGrid = document.querySelector(".yorumlar-grid");

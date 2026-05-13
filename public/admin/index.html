@@ -183,16 +183,7 @@
     }
 
     /* ── IMAGE UPLOAD ── */
-    .img-upload {
-      border: 2px dashed var(--border); border-radius: var(--radius);
-      padding: 16px; text-align: center; cursor: pointer; transition: all 0.15s;
-      position: relative; min-height: 80px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 8px;
-    }
-    .img-upload:hover { border-color: var(--accent); background: var(--bg); }
-    .img-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .img-upload img { max-height: 110px; max-width: 100%; border-radius: 4px; object-fit: contain; }
-    .img-upload p { font-size: 12px; color: var(--muted); }
+    .img-upload.dropzone { min-height: 100px; }
 
     /* ── TOAST ── */
     #toast {
@@ -234,6 +225,51 @@
     }
     .galeri-add:hover { border-color: var(--accent); color: var(--accent); }
     .galeri-add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    /* ── Sürükle-bırak (görsel) ── */
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative;
+      background: var(--surface);
+      min-height: 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .dropzone .dz-inner { pointer-events: none; max-width: 100%; }
+    .dropzone .dz-inner strong { font-size: 13px; display: block; margin-bottom: 4px; letter-spacing: -0.2px; }
+    .dropzone .dz-hint { font-size: 12px; color: var(--muted); display: block; line-height: 1.45; }
+    .dropzone.dropzone--active {
+      border-color: var(--accent);
+      background: linear-gradient(165deg, #fafaf8 0%, #ebe9e2 100%);
+      box-shadow: inset 0 0 0 1px rgba(45,45,42,0.07);
+    }
+    .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .dropzone img { max-height: 110px; max-width: 100%; border-radius: 4px; object-fit: contain; margin-bottom: 6px; }
+
+    .galeri-drop-hero { grid-column: 1 / -1; min-height: 112px; margin-bottom: 6px; }
+    .galeri-drop-hero svg { color: var(--muted); margin-bottom: 4px; }
+    .galeri-item .galeri-drag-hint {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+      text-align: center; padding: 6px 4px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.62)); color: #fff;
+      opacity: 0; transition: opacity 0.15s; pointer-events: none;
+    }
+    .galeri-item:hover .galeri-drag-hint { opacity: 1; }
+
+    .wave-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 10px; margin-top: 16px; }
+    .wave-admin-grid .galeri-item .galeri-del { font-size: 11px; }
+
+    .inbox-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+    .inbox-table th, .inbox-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .inbox-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+    .inbox-msg { max-width: 360px; white-space: pre-wrap; word-break: break-word; color: #444; font-size: 12px; }
 
     /* ── BILGI / PARAGRAF ROWS ── */
     .bilgi-row, .para-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
@@ -288,6 +324,19 @@
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
         Yorumlar
       </div>
+      <div class="nav-section" style="margin-top:8px">Anasayfa</div>
+      <div class="nav-item" data-page="ana-portfolyo">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Portfolyo (dalga)
+      </div>
+      <div class="nav-item" data-page="ana-urunler">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h8"/></svg>
+        Ürün önizleme
+      </div>
+      <div class="nav-item" data-page="iletisim">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>
+        İletişim &amp; mesajlar
+      </div>
       <div class="nav-section" style="margin-top:8px">Medya</div>
       <div class="nav-item" data-page="galeri">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
@@ -339,6 +388,35 @@
         <button class="btn btn-primary" id="yorum-add-btn">+ Yeni Ekle</button>
       </div>
       <div class="card"><div class="item-list" id="yorumlar-list"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    </div>
+
+    <div class="page" id="page-ana-portfolyo">
+      <div class="page-header">
+        <div><h2>Anasayfa — Portfolyo dalgası</h2><p>12 görsel sırası (yatay dalga animasyonu). Sürükleyerek sırala, tıklayarak değiştir.</p></div>
+        <button class="btn btn-primary" id="ana-port-save-btn">Kaydet</button>
+      </div>
+      <div class="card" style="padding:24px" id="ana-port-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
+    </div>
+
+    <div class="page" id="page-ana-urunler">
+      <div class="page-header">
+        <div><h2>Anasayfa — Ürün önizleme</h2><p>Anasayfadaki 4 ürün kartı hangi ürünlerden besleneceğini seçin (ürün listesi <code>Ürünler</code> sayfasındaki sıraya göre).</p></div>
+        <button class="btn btn-primary" id="ana-urun-save-btn">Kaydet</button>
+      </div>
+      <div class="card" style="padding:24px" id="ana-urun-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
+    </div>
+
+    <div class="page" id="page-iletisim">
+      <div class="page-header">
+        <div><h2>İletişim &amp; gelen kutusu</h2><p>İletişim metinleri ve formdan gelen mesajlar (KV). E-posta: FormSubmit ücretsiz ile <code>elifnuroztekinn@gmail.com</code>.</p></div>
+        <button class="btn btn-primary" id="iletisim-site-save-btn">Metinleri kaydet</button>
+      </div>
+      <div class="card" style="padding:24px;margin-bottom:20px" id="iletisim-form-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;margin-bottom:4px">Gelen mesajlar</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ziyaretçi formu Worker üzerinden kaydedilir; aynı anda FormSubmit ile e-posta gider.</p>
+        <div id="inbox-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
+      </div>
     </div>
 
     <div class="page" id="page-galeri">
@@ -538,7 +616,7 @@ function navigateTo(page) {
 
 async function loadPage(page) {
   try {
-    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda, site: loadSite };
+    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda, site: loadSite, "ana-portfolyo": loadAnaPortfolyo, "ana-urunler": loadAnaUrunler, iletisim: loadIletisimAdmin };
     if (map[page]) await map[page]();
   } catch (e) {
     if (e.message.includes("401") || e.message.toLowerCase().includes("yetkisiz")) {
@@ -577,32 +655,71 @@ document.getElementById("modal-save").addEventListener("click", async () => {
 
 // ─── IMG UPLOAD WIDGET ────────────────────────────────────────────────────────
 function imgWidget(id, src, folder) {
-  return `<div class="img-upload">
-    ${src ? `<img id="${id}-preview" src="${src}" alt="">` : `<img id="${id}-preview" src="" style="display:none" alt="">`}
-    <p id="${id}-label">${src ? "Değiştirmek için tıkla" : "Görsel seç veya sürükle"}</p>
+  const has = src ? "block" : "none";
+  return `<div class="dropzone img-upload" data-img-widget="${id}">
+    <div class="dz-inner">
+      <img id="${id}-preview" src="${src || ""}" alt="" style="display:${has};max-height:110px">
+      <p id="${id}-label"><strong>Görsel yükle</strong><span class="dz-hint">Buraya sürükleyip bırak veya tıklayarak seç</span></p>
+    </div>
     <input type="file" accept="image/*" id="${id}-file" data-folder="${folder}">
     <input type="hidden" id="${id}-val" value="${src || ""}">
   </div>`;
 }
 
+async function runImgUpload(id, file) {
+  const label = document.getElementById(`${id}-label`);
+  const valEl = document.getElementById(`${id}-val`);
+  const prev = document.getElementById(`${id}-preview`);
+  if (!file || !file.type.startsWith("image/")) return;
+  label.innerHTML = "<strong>Yükleniyor…</strong>";
+  try {
+    const url = await uploadMedia(file);
+    valEl.value = url;
+    prev.src = url;
+    prev.style.display = "block";
+    label.innerHTML = "<strong>Görsel yükle</strong><span class=\"dz-hint\">Buraya sürükleyip bırak veya tıklayarak seç</span>";
+    toast("Görsel yüklendi");
+  } catch (e) {
+    label.innerHTML = "<strong>Hata</strong><span class=\"dz-hint\">Tekrar dene</span>";
+    toast(e.message, "error");
+  }
+}
+
 function bindImg(id) {
+  const wrap = document.querySelector(`[data-img-widget="${id}"]`);
   const inp = document.getElementById(`${id}-file`);
   if (!inp) return;
-  inp.addEventListener("change", async e => {
+  inp.addEventListener("change", async (e) => {
     const file = e.target.files[0];
+    e.target.value = "";
     if (!file) return;
-    document.getElementById(`${id}-label`).textContent = "Yükleniyor...";
-    try {
-      const url = await uploadMedia(file);
-      document.getElementById(`${id}-val`).value = url;
-      const prev = document.getElementById(`${id}-preview`);
-      prev.src = url; prev.style.display = "block";
-      document.getElementById(`${id}-label`).textContent = "Değiştirmek için tıkla";
-      toast("Görsel yüklendi");
-    } catch (e) {
-      document.getElementById(`${id}-label`).textContent = "Yükleme başarısız";
-      toast(e.message, "error");
+    await runImgUpload(id, file);
+  });
+  if (!wrap) return;
+  let dragDepth = 0;
+  wrap.addEventListener("dragenter", (e) => {
+    e.preventDefault();
+    dragDepth += 1;
+    wrap.classList.add("dropzone--active");
+  });
+  wrap.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    dragDepth -= 1;
+    if (dragDepth <= 0) {
+      dragDepth = 0;
+      wrap.classList.remove("dropzone--active");
     }
+  });
+  wrap.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  });
+  wrap.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    dragDepth = 0;
+    wrap.classList.remove("dropzone--active");
+    const file = e.dataTransfer?.files?.[0];
+    if (file) await runImgUpload(id, file);
   });
 }
 
@@ -681,14 +798,6 @@ async function loadSite() {
       ${siteField("Pinterest URL", "sosyal.pinterest", "url")}
       ${siteField("YouTube URL", "sosyal.youtube", "url")}
       ${siteField("TikTok URL", "sosyal.tiktok", "url")}
-      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">İletişim (anasayfa)</h3>
-      ${siteField("E-posta mailto", "iletisim.emailMailto", "text")}
-      ${siteField("E-posta görünen" + L("iletisim.emailDisplay"), "iletisim.emailDisplay")}
-      ${siteField("Instagram görünen", "iletisim.instagramDisplay")}
-      ${siteField("Konum etiket" + L("home.channelLabel"), "iletisim.konumLabel")}
-      ${siteField("Konum metin", "iletisim.konumValue")}
-      ${siteField("FormSubmit AJAX URL", "iletisim.formSubmitUrl", "url")}
-      ${siteField("Form konu (_subject)", "iletisim.formSubject")}
       <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">Anasayfa metinleri</h3>
       ${siteField("Hero başlık" + L("home.heroTitle"), "home.heroTitle")}
       ${[0,1,2].map(i => siteField(`Overlay satır ${i+1}` + L("home.heroOverlayLine"), `home.heroOverlay.${i}`)).join("")}
@@ -700,11 +809,8 @@ async function loadSite() {
       ${siteField("Bölüm: Yorumlar", "home.sectionYorumlar")}
       ${siteField("Bölüm: İletişim", "home.sectionIletisim")}
       ${siteField("Ürün önizleme link metni", "home.previewAllLink")}
-      ${siteField("İletişim başlık" + L("home.iletisimTitle"), "home.iletisimTitle")}
-      <div class="fg" style="grid-column:1/-1"><label>İletişim açıklama ${L("home.iletisimDesc")}</label><textarea rows="4" data-site-path="home.iletisimDesc">${esc(s.home?.iletisimDesc ?? "")}</textarea></div>
-      ${siteField("Kanal: E-posta etiket", "home.channelEmailLabel")}
-      ${siteField("Kanal: Instagram etiket", "home.channelInstagramLabel")}
-      <p style="grid-column:1/-1;font-size:12px;color:var(--muted)">Hero görselleri ve preload listesi için şimdilik <code>site.json</code> düzenleyin; bir sonraki adımda panelden sıra + yükleme eklenebilir.</p>
+      <p style="grid-column:1/-1;font-size:12px;color:var(--muted)"><strong>İletişim</strong> kanalları, form ve gelen kutusu: sol menü <strong>İletişim &amp; mesajlar</strong>. <strong>Portfolyo dalgası</strong> ve <strong>4 ürün kartı</strong> için ilgili anasayfa menüleri.</p>
+      <p style="grid-column:1/-1;font-size:12px;color:var(--muted)">Hero ve preload görselleri: <code>site.json</code> → <code>home.heroImages</code>, <code>home.preloadPortfolio</code>.</p>
     </div>`;
 }
 
@@ -766,6 +872,243 @@ document.getElementById("site-save-btn").addEventListener("click", async () => {
   } finally {
     btn.disabled = false;
     btn.textContent = "Kaydet";
+  }
+});
+
+// ─── ANASAYFA: Portfolyo dalgası (12 görsel) ────────────────────────────────
+const WAVE_DEFAULT_SEQ = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3];
+
+async function loadAnaPortfolyo() {
+  const wrap = document.getElementById("ana-port-wrap");
+  wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.site = await loadSlug("site");
+  if (!data.site.home) data.site.home = {};
+  const wave = Array.isArray(data.site.home.portfolioWaveImages) ? [...data.site.home.portfolioWaveImages] : [];
+  while (wave.length < 12) wave.push(`/portfolio/${WAVE_DEFAULT_SEQ[wave.length]}.webp`);
+  data.site.home.portfolioWaveImages = wave.slice(0, 12);
+  renderAnaPortfolyo();
+}
+
+function renderAnaPortfolyo() {
+  const wrap = document.getElementById("ana-port-wrap");
+  const arr = data.site.home.portfolioWaveImages;
+  wrap.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tam <strong>12</strong> görsel (dalga animasyonu). <strong>↻</strong> ile değiştir; sırayı sürükleyip bırak.</p>
+  <input type="file" id="wave-rep-file" accept="image/*" style="display:none" />
+  <div class="wave-admin-grid" id="wave-admin-grid">${arr
+    .map(
+      (src, i) => `
+    <div class="galeri-item" draggable="true" data-wave-i="${i}">
+      <img src="${esc(src)}" alt="" draggable="false">
+      <button type="button" class="galeri-del" data-wave-rep="${i}" title="Görseli değiştir">↻</button>
+      <span class="galeri-drag-hint">Sürükle</span>
+    </div>`
+    )
+    .join("")}</div>`;
+
+  const fileInp = document.getElementById("wave-rep-file");
+  let repIdx = null;
+  wrap.querySelectorAll("[data-wave-rep]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      repIdx = Number(btn.dataset.waveRep);
+      fileInp.value = "";
+      fileInp.click();
+    });
+  });
+  fileInp.addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    if (!f || repIdx === null) return;
+    try {
+      const url = await uploadMedia(f);
+      data.site.home.portfolioWaveImages[repIdx] = url;
+      renderAnaPortfolyo();
+      toast("Görsel güncellendi — Kaydet");
+    } catch (err) {
+      toast(err.message, "error");
+    }
+  });
+
+  const grid = document.getElementById("wave-admin-grid");
+  grid.querySelectorAll(".galeri-item[draggable]").forEach((el) => {
+    el.addEventListener("dragstart", (e) => {
+      el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", el.dataset.waveI);
+    });
+    el.addEventListener("dragend", () => el.classList.remove("dragging"));
+    el.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    });
+    el.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const from = Number(e.dataTransfer.getData("text/plain"));
+      const to = Number(el.dataset.waveI);
+      if (Number.isNaN(from) || from === to) return;
+      const a = data.site.home.portfolioWaveImages;
+      const [moved] = a.splice(from, 1);
+      a.splice(to, 0, moved);
+      renderAnaPortfolyo();
+      toast("Sıra değişti — Kaydet");
+    });
+  });
+}
+
+document.getElementById("ana-port-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("ana-port-save-btn");
+  btn.disabled = true;
+  btn.textContent = "Kaydediliyor...";
+  try {
+    const w = data.site.home.portfolioWaveImages;
+    if (!Array.isArray(w) || w.length !== 12 || w.some((x) => typeof x !== "string" || !x.trim())) {
+      throw new Error("12 geçerli görsel URL gerekli");
+    }
+    validateSite(data.site);
+    data.site.updatedAt = Date.now();
+    await saveSlug("site", data.site);
+    toast("Portfolyo dalgası kaydedildi");
+  } catch (e) {
+    toast(e.message || String(e), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Kaydet";
+  }
+});
+
+// ─── ANASAYFA: Ürün önizleme (4 kart) ────────────────────────────────────────
+async function loadAnaUrunler() {
+  const wrap = document.getElementById("ana-urun-wrap");
+  wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  const [site, urunData] = await Promise.all([loadSlug("site"), loadSlug("urunler")]);
+  data.site = site;
+  const sorted = [...(urunData.urunler || [])].sort((a, b) => (a.sira ?? 0) - (b.sira ?? 0));
+  if (!sorted.length) {
+    wrap.innerHTML = '<p>Önce <strong>Ürünler</strong> sayfasından ürün ekleyin.</p>';
+    return;
+  }
+  let pick = Array.isArray(data.site.home?.previewUrunSira) ? [...data.site.home.previewUrunSira] : [1, 2, 3, 4];
+  while (pick.length < 4) pick.push(sorted[Math.min(pick.length, sorted.length - 1)].sira);
+  const html = [0, 1, 2, 3]
+    .map((slot) => {
+      const cur = pick[slot];
+      const opts = sorted
+        .map(
+          (u) =>
+            `<option value="${u.sira}" ${Number(u.sira) === Number(cur) ? "selected" : ""}>${esc(u.isim)} (sıra ${u.sira})</option>`
+        )
+        .join("");
+      return `<div class="fg"><label>Önizleme kartı ${slot + 1}</label><select id="prev-urun-${slot}">${opts}</select></div>`;
+    })
+    .join("");
+  wrap.innerHTML = `<div class="form-grid form-grid-2">${html}</div><p style="margin-top:16px;font-size:12px;color:var(--muted)">Ürün içerikleri <strong>Ürünler</strong> menüsünden düzenlenir.</p>`;
+}
+
+document.getElementById("ana-urun-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("ana-urun-save-btn");
+  btn.disabled = true;
+  btn.textContent = "Kaydediliyor...";
+  try {
+    const sira = [0, 1, 2, 3].map((i) => {
+      const el = document.getElementById(`prev-urun-${i}`);
+      if (!el) throw new Error("Form yüklenemedi");
+      return Number(el.value);
+    });
+    if (!data.site.home) data.site.home = {};
+    data.site.home.previewUrunSira = sira;
+    validateSite(data.site);
+    data.site.updatedAt = Date.now();
+    await saveSlug("site", data.site);
+    toast("Ürün önizlemesi kaydedildi");
+  } catch (e) {
+    toast(e.message || String(e), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Kaydet";
+  }
+});
+
+// ─── İletişim metinleri + gelen kutusu ───────────────────────────────────────
+function renderInboxTable(items) {
+  const list = Array.isArray(items) ? items : [];
+  if (!list.length) return '<p style="color:var(--muted);font-size:13px">Henüz mesaj yok.</p>';
+  return `<table class="inbox-table"><thead><tr><th>Tarih</th><th>Ad</th><th>E-posta</th><th>Konu</th><th>Mesaj</th><th></th></tr></thead><tbody>${list
+    .map((row) => {
+      const d = new Date(row.createdAt);
+      const ds = Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("tr-TR");
+      return `<tr><td>${esc(ds)}</td><td>${esc(row.ad)}</td><td>${esc(row.email)}</td><td>${esc(row.konu)}</td><td class="inbox-msg">${esc(row.mesaj)}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="delInboxMsg(${JSON.stringify(
+        row.id
+      )})">Sil</button></td></tr>`;
+    })
+    .join("")}</tbody></table>`;
+}
+
+window.delInboxMsg = async function (id) {
+  if (!id || !confirm("Bu mesaj silinsin mi?")) return;
+  try {
+    data.contactInbox.items = (data.contactInbox.items || []).filter((x) => x.id !== id);
+    await api("PUT", "/api/admin/contact-inbox", { items: data.contactInbox.items });
+    document.getElementById("inbox-wrap").innerHTML = renderInboxTable(data.contactInbox.items);
+    toast("Silindi");
+  } catch (e) {
+    toast(e.message, "error");
+  }
+};
+
+async function loadIletisimAdmin() {
+  const fwrap = document.getElementById("iletisim-form-wrap");
+  const iwrap = document.getElementById("inbox-wrap");
+  fwrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  iwrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  const [site, inbox] = await Promise.all([loadSlug("site"), api("GET", "/api/admin/contact-inbox")]);
+  data.site = site;
+  data.contactInbox = inbox && Array.isArray(inbox.items) ? inbox : { items: [] };
+  const s = data.site;
+  const L = (key) => {
+    const r = s.limits?.[key];
+    return r ? ` <small style="color:var(--muted)">(${r.min ?? 0}–${r.max ?? "∞"} kar.)</small>` : "";
+  };
+  fwrap.innerHTML = `
+    <div class="form-grid">
+      <h3 style="grid-column:1/-1;font-size:14px;margin-bottom:4px">Kanallar &amp; form</h3>
+      <div class="fg"><label>E-posta mailto</label><input type="text" data-site-path="iletisim.emailMailto" value="${esc(s.iletisim?.emailMailto ?? "")}"></div>
+      <div class="fg"><label>E-posta görünen${L("iletisim.emailDisplay")}</label><input type="text" data-site-path="iletisim.emailDisplay" value="${esc(s.iletisim?.emailDisplay ?? "")}"></div>
+      <div class="fg"><label>Instagram görünen</label><input type="text" data-site-path="iletisim.instagramDisplay" value="${esc(s.iletisim?.instagramDisplay ?? "")}"></div>
+      <div class="fg"><label>Konum etiket</label><input type="text" data-site-path="iletisim.konumLabel" value="${esc(s.iletisim?.konumLabel ?? "")}"></div>
+      <div class="fg"><label>Konum metin</label><input type="text" data-site-path="iletisim.konumValue" value="${esc(s.iletisim?.konumValue ?? "")}"></div>
+      <div class="fg"><label>FormSubmit / yedek AJAX URL</label><input type="url" data-site-path="iletisim.formSubmitUrl" value="${esc(s.iletisim?.formSubmitUrl ?? "")}"></div>
+      <div class="fg"><label>Form e-posta konusu (_subject)</label><input type="text" data-site-path="iletisim.formSubject" value="${esc(s.iletisim?.formSubject ?? "")}"></div>
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 4px">Anasayfa iletişim bloğu</h3>
+      <div class="fg"><label>Başlık${L("home.iletisimTitle")}</label><input type="text" data-site-path="home.iletisimTitle" value="${esc(s.home?.iletisimTitle ?? "")}"></div>
+      <div class="fg" style="grid-column:1/-1"><label>Açıklama${L("home.iletisimDesc")}</label><textarea rows="4" data-site-path="home.iletisimDesc">${esc(s.home?.iletisimDesc ?? "")}</textarea></div>
+      <div class="fg"><label>Kanal: E-posta etiket</label><input type="text" data-site-path="home.channelEmailLabel" value="${esc(s.home?.channelEmailLabel ?? "")}"></div>
+      <div class="fg"><label>Kanal: Instagram etiket</label><input type="text" data-site-path="home.channelInstagramLabel" value="${esc(s.home?.channelInstagramLabel ?? "")}"></div>
+      <p style="grid-column:1/-1;font-size:12px;color:var(--muted)">Ziyaretçi formu production'da Worker'a gider; e-posta FormSubmit ile <strong>elifnuroztekinn@gmail.com</strong> adresine iletilir. Gelen mesajlar KV'de saklanır (ücretsiz kota).</p>
+    </div>`;
+  iwrap.innerHTML = renderInboxTable(data.contactInbox.items);
+}
+
+document.getElementById("iletisim-site-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("iletisim-site-save-btn");
+  if (!data.site) return;
+  btn.disabled = true;
+  btn.textContent = "Kaydediliyor...";
+  try {
+    const clone = JSON.parse(JSON.stringify(data.site));
+    document.querySelectorAll("#iletisim-form-wrap [data-site-path]").forEach((el) => {
+      const path = el.getAttribute("data-site-path");
+      if (!path) return;
+      const raw = el.tagName === "TEXTAREA" ? el.value : el.value.trim();
+      siteSetDeep(clone, path, raw);
+    });
+    validateSite(clone);
+    clone.updatedAt = Date.now();
+    await saveSlug("site", clone);
+    data.site = clone;
+    toast("İletişim metinleri kaydedildi");
+  } catch (e) {
+    toast(e.message || String(e), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Metinleri kaydet";
   }
 });
 
@@ -1083,14 +1426,22 @@ async function loadGaleri() {
 function renderGaleri() {
   const items = data.galeri.galeri;
   const grid = document.getElementById("galeri-grid");
-  grid.innerHTML = items.map((g, i) => `
+  grid.innerHTML = `
+    <div class="dropzone galeri-drop-hero" id="galeri-main-drop">
+      <div class="dz-inner">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><rect x="4" y="4" width="16" height="16" rx="2.5" opacity="0.2"/></svg>
+        <strong>Görselleri buraya sürükleyip bırak</strong>
+        <span class="dz-hint">Birden fazla dosya. Kartları sürükleyerek sırayı değiştir; işin bitince <strong>Kaydet</strong>.</span>
+      </div>
+    </div>` + items.map((g, i) => `
     <div class="galeri-item" draggable="true" data-gidx="${i}">
       <img src="${g.gorsel}" alt="${esc(g.alt || "")}" draggable="false">
       <button type="button" class="galeri-del" data-del="${i}">✕</button>
+      <span class="galeri-drag-hint" aria-hidden="true">Sürükle — sıra</span>
     </div>`).join("") + `
     <label class="galeri-add">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-      <span>Görsel Ekle</span>
+      <span>Dosya seç</span>
       <input type="file" accept="image/*" multiple id="galeri-file-input">
     </label>`;
 
@@ -1123,12 +1474,13 @@ function renderGaleri() {
       const [moved] = arr.splice(from, 1);
       arr.splice(to, 0, moved);
       renderGaleri();
-      toast("Sıra değişti — kaydetmeyi unutma");
+      toast("Sıra güncellendi — Kaydet");
     });
   });
 
   document.getElementById("galeri-file-input").addEventListener("change", async (e) => {
     const files = Array.from(e.target.files);
+    e.target.value = "";
     for (const file of files) {
       try {
         const url = await uploadMedia(file);
@@ -1138,8 +1490,35 @@ function renderGaleri() {
         toast(`${file.name}: ${err.message}`, "error");
       }
     }
-    renderGaleri();
+    if (files.length) renderGaleri();
   });
+
+  const zone = document.getElementById("galeri-main-drop");
+  if (zone) {
+    zone.ondragover = (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+      zone.classList.add("dropzone--active");
+    };
+    zone.ondragleave = (e) => {
+      if (!zone.contains(e.relatedTarget)) zone.classList.remove("dropzone--active");
+    };
+    zone.ondrop = async (e) => {
+      e.preventDefault();
+      zone.classList.remove("dropzone--active");
+      const files = Array.from(e.dataTransfer?.files || []).filter((f) => f.type.startsWith("image/"));
+      for (const file of files) {
+        try {
+          const url = await uploadMedia(file);
+          data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
+          toast(`${file.name} yüklendi`);
+        } catch (err) {
+          toast(`${file.name}: ${err.message}`, "error");
+        }
+      }
+      if (files.length) renderGaleri();
+    };
+  }
 }
 
 window.delGaleri = function(idx) {
