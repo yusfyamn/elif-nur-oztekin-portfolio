@@ -14,6 +14,28 @@ const ALLOWED_ORIGINS = [
   "http://localhost:4173",
 ];
 
+/** CORS: sabit liste + Vercel önizleme (*.vercel.app) */
+function isAllowedCorsOrigin(o) {
+  if (!o) return false;
+  if (ALLOWED_ORIGINS.includes(o)) return true;
+  try {
+    const u = new URL(o);
+    if (u.protocol === "https:" && u.hostname.endsWith(".vercel.app")) return true;
+  } catch {
+    /* ignore */
+  }
+  return false;
+}
+
+function corsHeaders(origin) {
+  const acao = isAllowedCorsOrigin(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": acao,
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
 const SLUGS = new Set([
   "site",
   "duyurular",
@@ -26,15 +48,6 @@ const SLUGS = new Set([
 ]);
 
 const MAX_KV_ASSET_BYTES = 900_000;
-
-function corsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.includes(origin);
-  return {
-    "Access-Control-Allow-Origin": allowed ? origin : ALLOWED_ORIGINS[0],
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
-}
 
 function json(data, status = 200, origin = "") {
   return new Response(JSON.stringify(data), {
@@ -222,7 +235,7 @@ export default {
 
     // ── Public iletişim formu (KV gelen kutusu + FormSubmit ile e-posta) ──
     if (path === "/api/contact" && request.method === "POST") {
-      if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+      if (origin && !isAllowedCorsOrigin(origin)) {
         return err("Origin izinli değil", 403, origin);
       }
       let body;
@@ -242,7 +255,7 @@ export default {
       const mesaj = typeof body.mesaj === "string" ? body.mesaj.trim() : "";
 
       if (ad.length < 2 || ad.length > 120) return err("Ad geçersiz", 400, origin);
-      if (mesaj.length < 10 || mesaj.length > 8000) return err("Mesaj 10–8000 karakter olmalı", 400, origin);
+      if (mesaj.length < 5 || mesaj.length > 8000) return err("Mesaj 5–8000 karakter olmalı", 400, origin);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err("E-posta geçersiz", 400, origin);
       const allowedKonu = new Set(["siparis", "ozel-siparis", "atolye", "ozel-atolye", "diger"]);
       if (!allowedKonu.has(konu)) return err("Konu seçimi geçersiz", 400, origin);

@@ -10,6 +10,7 @@ export function getCmsApiOrigin() {
   if (typeof window !== "undefined") {
     const h = window.location.hostname;
     if (h === "www.elifnuroztekin.com" || h === "elifnuroztekin.com") return PROD_CMS_DEFAULT;
+    if (h.endsWith(".vercel.app")) return PROD_CMS_DEFAULT;
   }
   return "";
 }
