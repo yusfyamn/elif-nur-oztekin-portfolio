@@ -15,6 +15,7 @@ const ALLOWED_ORIGINS = [
 ];
 
 const SLUGS = new Set([
+  "site",
   "duyurular",
   "urunler",
   "atolyeler",

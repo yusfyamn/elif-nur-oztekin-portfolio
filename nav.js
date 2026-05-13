@@ -11,6 +11,20 @@ function lockScroll() {
   document.body.style.overflow = "hidden";
 }
 
+function defaultSosyal() {
+  return {
+    instagram: "https://www.instagram.com/elifnuroztekin/",
+    pinterest: "https://www.pinterest.com/elifnuroztekin/",
+    youtube: "https://www.youtube.com/@elifnuroztekin",
+    tiktok: "https://www.tiktok.com/@elifnuroztekin",
+  };
+}
+
+function sosyalHref(key) {
+  const s = window.__SITE__?.sosyal ?? defaultSosyal();
+  return s[key] ?? defaultSosyal()[key];
+}
+
 function unlockScroll() {
   if (_lenis) _lenis.start();
   document.body.style.overflow = "";
@@ -66,10 +80,10 @@ export function initMobileMenu() {
           <span class="mobile-menu-foot-location">İstanbul — 2026</span>
         </div>
         <div class="mobile-menu-foot-links">
-          <a href="https://www.instagram.com/elifnuroztekin/" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://www.pinterest.com/elifnuroztekin/" target="_blank" rel="noopener noreferrer">Pinterest</a>
-          <a href="https://www.youtube.com/@elifnuroztekin" target="_blank" rel="noopener noreferrer">YouTube</a>
-          <a href="https://www.tiktok.com/@elifnuroztekin" target="_blank" rel="noopener noreferrer">TikTok</a>
+          <a href="${sosyalHref("instagram")}" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="${sosyalHref("pinterest")}" target="_blank" rel="noopener noreferrer">Pinterest</a>
+          <a href="${sosyalHref("youtube")}" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a href="${sosyalHref("tiktok")}" target="_blank" rel="noopener noreferrer">TikTok</a>
         </div>
       </div>
     </div>

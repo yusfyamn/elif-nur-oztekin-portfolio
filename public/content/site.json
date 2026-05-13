@@ -1,0 +1,94 @@
+{
+  "limits": {
+    "nav.logoTitle": { "min": 1, "max": 48 },
+    "nav.logoSub": { "min": 1, "max": 80 },
+    "nav.linkLabel": { "min": 1, "max": 32 },
+    "footer.brandTitle": { "min": 1, "max": 48 },
+    "footer.brandSub": { "min": 1, "max": 100 },
+    "footer.copyrightText": { "min": 1, "max": 80 },
+    "footer.creditText": { "min": 1, "max": 40 },
+    "seo.title": { "min": 10, "max": 120 },
+    "seo.description": { "min": 20, "max": 320 },
+    "home.heroTitle": { "min": 1, "max": 48 },
+    "home.heroOverlayLine": { "min": 1, "max": 24 },
+    "home.heroSideLine": { "min": 1, "max": 40 },
+    "home.sectionLabel": { "min": 1, "max": 32 },
+    "home.iletisimTitle": { "min": 1, "max": 80 },
+    "home.iletisimDesc": { "min": 1, "max": 400 },
+    "home.channelEmailLabel": { "min": 1, "max": 24 },
+    "home.channelInstagramLabel": { "min": 1, "max": 24 },
+    "iletisim.emailDisplay": { "min": 1, "max": 120 },
+    "nav.linkHref": { "min": 1, "max": 64 }
+  },
+  "nav": {
+    "logoTitle": "ELİF NUR ÖZTEKİN",
+    "logoSub": "Monamuj Design & Muny Art Lab",
+    "links": [
+      { "href": "/anasayfa", "label": "Anasayfa" },
+      { "href": "/urunler", "label": "Ürünler" },
+      { "href": "/atolyeler", "label": "Aktif Atölyeler" },
+      { "href": "/galeri", "label": "Galeri" },
+      { "href": "/hakkimda", "label": "Hakkımda" },
+      { "href": "/iletisim", "label": "İletişim" }
+    ]
+  },
+  "footer": {
+    "brandTitle": "ELİF NUR ÖZTEKİN",
+    "brandSub": "Monamuj Design & Muny Art Lab",
+    "copyrightUrl": "https://elifnuroztekin.com",
+    "copyrightText": "© 2026 ELİF NUR ÖZTEKİN",
+    "creditUrl": "https://yusufyaman.com",
+    "creditText": "SITE BY YAMAN"
+  },
+  "sosyal": {
+    "instagram": "https://www.instagram.com/elifnuroztekin/",
+    "pinterest": "https://www.pinterest.com/elifnuroztekin/",
+    "youtube": "https://www.youtube.com/@elifnuroztekin",
+    "tiktok": "https://www.tiktok.com/@elifnuroztekin"
+  },
+  "iletisim": {
+    "emailMailto": "mailto:elifnuroztekinn@gmail.com",
+    "emailDisplay": "elifnuroztekinn@gmail.com",
+    "instagramDisplay": "@elifnuroztekin",
+    "konumLabel": "Konum",
+    "konumValue": "İstanbul, Türkiye",
+    "formSubmitUrl": "https://formsubmit.co/ajax/elifnuroztekinn@gmail.com",
+    "formSubject": "Yeni iletişim formu"
+  },
+  "seo": {
+    "title": "ELİF NUR ÖZTEKİN — Monamuj Design & Muny Art Lab",
+    "description": "Elif Nur Öztekın — el yapımı seramik, tekstil ve kağıt tasarımları. Sanat atölyeleri. İstanbul'dan Monamuj Design ve Muny Art Lab.",
+    "ogImage": "https://elifnuroztekin.com/hero.webp"
+  },
+  "home": {
+    "heroTitle": "ELİF NUR ÖZTEKİN",
+    "heroOverlay": ["Sanat", "Tasarım", "Atölye"],
+    "heroSideLeft": ["Tasarımcı", "Sanat Eğitmeni", "El Yapımı Üretim"],
+    "heroSideRight": ["Muny Art Lab", "Monamuj Design", "İstanbul — 2026"],
+    "heroImages": [
+      "/portfolio/1.webp",
+      "/portfolio/9.webp",
+      "/hero.webp",
+      "/portfolio/5.webp",
+      "/portfolio/4.webp"
+    ],
+    "preloadPortfolio": [
+      "/portfolio/1.webp",
+      "/portfolio/2.webp",
+      "/portfolio/3.webp",
+      "/portfolio/4.webp",
+      "/portfolio/5.webp"
+    ],
+    "sectionDuyurular": "Duyurular",
+    "sectionPortfolyo": "Portfolyo",
+    "sectionUrunler": "Ürünler",
+    "sectionYorumlar": "Yorumlar",
+    "sectionIletisim": "İletişim",
+    "previewAllLink": "Tümünü gör →",
+    "iletisimTitle": "Bir şey mi yaratmak istiyorsun?",
+    "iletisimDesc": "Sipariş, atölye kaydı, işbirliği veya sadece merhaba demek için formu doldur. En geç 48 saat içinde dönerim.",
+    "channelEmailLabel": "E-posta",
+    "channelInstagramLabel": "Instagram"
+  },
+  "updatedAt": 0
+}

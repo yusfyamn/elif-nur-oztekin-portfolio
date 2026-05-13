@@ -212,7 +212,12 @@
 
     /* ── GALERİ ── */
     .galeri-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-    .galeri-item { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg); }
+    .galeri-item {
+      position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border); background: var(--bg); cursor: grab;
+    }
+    .galeri-item:active { cursor: grabbing; }
+    .galeri-item.dragging { opacity: 0.55; }
     .galeri-item img { width: 100%; height: 100%; object-fit: cover; }
     .galeri-item .galeri-del {
       position: absolute; top: 5px; right: 5px; width: 22px; height: 22px;
@@ -293,6 +298,10 @@
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>
         Hakkımda
       </div>
+      <div class="nav-item" data-page="site">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+        Site &amp; SEO
+      </div>
     </nav>
     <div class="sidebar-foot">
       <button class="btn-logout" id="logout-btn">Çıkış Yap</button>
@@ -350,6 +359,14 @@
       <div class="card" style="padding:24px" id="hakkimda-form-wrap">
         <div class="loading-state"><div class="spinner"></div></div>
       </div>
+    </div>
+
+    <div class="page" id="page-site">
+      <div class="page-header">
+        <div><h2>Site &amp; SEO</h2><p>Nav, footer, sosyal, anasayfa metinleri — sınırlar site.json içindeki <code>limits</code> ile uyumlu</p></div>
+        <button class="btn btn-primary" id="site-save-btn">Kaydet</button>
+      </div>
+      <div class="card" style="padding:24px" id="site-form-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
     </div>
   </main>
 </div>
@@ -413,18 +430,47 @@ async function saveSlug(slug, content) {
 }
 
 async function uploadMedia(file) {
+  const optimized = await fileToWebpIfPossible(file);
   const reader = new FileReader();
   const base64 = await new Promise((res, rej) => {
     reader.onload = () => res(reader.result.split(",")[1]);
     reader.onerror = rej;
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(optimized);
   });
   const resp = await api("POST", "/api/upload", {
-    filename: file.name,
-    contentType: file.type || "application/octet-stream",
+    filename: optimized.name || file.name,
+    contentType: optimized.type || "image/webp",
     base64,
   });
   return resp.url;
+}
+
+/** Tarayıcı WebP destekliyse yeniden boyutlandır + WebP (kalite ~0.82, max kenar 2400px) */
+async function fileToWebpIfPossible(file) {
+  if (!file.type.startsWith("image/")) return file;
+  if (typeof createImageBitmap !== "function") return file;
+  try {
+    const bmp = await createImageBitmap(file);
+    const maxSide = 2400;
+    let w = bmp.width;
+    let h = bmp.height;
+    const scale = Math.min(1, maxSide / Math.max(w, h));
+    w = Math.round(w * scale);
+    h = Math.round(h * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bmp, 0, 0, w, h);
+    bmp.close?.();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
+    if (!blob || blob.size < 100) return file;
+    const base = file.name.replace(/\.[^.]+$/i, "") || "gorsel";
+    return new File([blob], `${base}.webp`, { type: "image/webp" });
+  } catch {
+    return file;
+  }
 }
 
 // ─── AUTH ────────────────────────────────────────────────────────────────────
@@ -492,7 +538,7 @@ function navigateTo(page) {
 
 async function loadPage(page) {
   try {
-    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda };
+    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda, site: loadSite };
     if (map[page]) await map[page]();
   } catch (e) {
     if (e.message.includes("401") || e.message.toLowerCase().includes("yetkisiz")) {
@@ -559,6 +605,169 @@ function bindImg(id) {
     }
   });
 }
+
+// ─── SITE (nav, footer, SEO, sosyal) ─────────────────────────────────────────
+function siteGet(obj, path) {
+  return path.split(".").reduce((o, k) => (o != null && o[k] !== undefined ? o[k] : undefined), obj);
+}
+
+function siteSetDeep(obj, path, value) {
+  const keys = path.split(".");
+  let cur = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = keys[i];
+    if (!cur[k] || typeof cur[k] !== "object") cur[k] = {};
+    cur = cur[k];
+  }
+  cur[keys[keys.length - 1]] = value;
+}
+
+function validateSite(s) {
+  const L = s.limits || {};
+  for (const [path, rule] of Object.entries(L)) {
+    const v = siteGet(s, path);
+    if (typeof v !== "string") continue;
+    if (rule.min != null && v.length < rule.min) throw new Error(`${path}: en az ${rule.min} karakter`);
+    if (rule.max != null && v.length > rule.max) throw new Error(`${path}: en fazla ${rule.max} karakter`);
+  }
+  const keys = ["instagram", "pinterest", "youtube", "tiktok"];
+  for (const k of keys) {
+    const u = s.sosyal?.[k];
+    if (u && !/^https:\/\//i.test(String(u).trim())) throw new Error(`${k} URL https ile başlamalı`);
+  }
+}
+
+function siteField(label, path, type = "text", extra = "") {
+  const v = siteGet(data.site, path);
+  const val = v === undefined || v === null ? "" : String(v).replace(/"/g, "&quot;");
+  return `<div class="fg"><label>${label}</label><input type="${type}" data-site-path="${path}" value="${val}">${extra}</div>`;
+}
+
+async function loadSite() {
+  const wrap = document.getElementById("site-form-wrap");
+  wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  data.site = await loadSlug("site");
+  const s = data.site;
+  const L = (key) => {
+    const r = s.limits?.[key];
+    return r ? ` <small style="color:var(--muted)">(${r.min ?? 0}–${r.max ?? "∞"} kar.)</small>` : "";
+  };
+  wrap.innerHTML = `
+    <div class="form-grid">
+      <h3 style="grid-column:1/-1;font-size:14px;margin:8px 0">SEO</h3>
+      ${siteField("Sayfa başlığı (title)" + L("seo.title"), "seo.title")}
+      ${siteField("Meta açıklama" + L("seo.description"), "seo.description")}
+      ${siteField("OG / Twitter görsel URL", "seo.ogImage", "url")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">Nav</h3>
+      ${siteField("Logo satır 1" + L("nav.logoTitle"), "nav.logoTitle")}
+      ${siteField("Logo satır 2" + L("nav.logoSub"), "nav.logoSub")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:8px 0">Menü linkleri</h3>
+      ${[0,1,2,3,4,5].map(i => {
+        const l = s.nav?.links?.[i] || { href: "", label: "" };
+        return `<div class="form-grid form-grid-2" style="grid-column:1/-1">
+          <div class="fg"><label>Link ${i+1} metin ${L("nav.linkLabel")}</label><input type="text" data-site-path="nav.links.${i}.label" value="${esc(l.label)}"></div>
+          <div class="fg"><label>Link ${i+1} href ${L("nav.linkHref")}</label><input type="text" data-site-path="nav.links.${i}.href" value="${esc(l.href)}"></div>
+        </div>`;
+      }).join("")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">Footer</h3>
+      ${siteField("Marka başlık" + L("footer.brandTitle"), "footer.brandTitle")}
+      ${siteField("Marka alt satır" + L("footer.brandSub"), "footer.brandSub")}
+      ${siteField("Telif link (URL)", "footer.copyrightUrl", "url")}
+      ${siteField("Telif metin" + L("footer.copyrightText"), "footer.copyrightText")}
+      ${siteField("Credit link", "footer.creditUrl", "url")}
+      ${siteField("Credit metin" + L("footer.creditText"), "footer.creditText")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">Sosyal</h3>
+      ${siteField("Instagram URL" + L("sosyal.url"), "sosyal.instagram", "url")}
+      ${siteField("Pinterest URL", "sosyal.pinterest", "url")}
+      ${siteField("YouTube URL", "sosyal.youtube", "url")}
+      ${siteField("TikTok URL", "sosyal.tiktok", "url")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">İletişim (anasayfa)</h3>
+      ${siteField("E-posta mailto", "iletisim.emailMailto", "text")}
+      ${siteField("E-posta görünen" + L("iletisim.emailDisplay"), "iletisim.emailDisplay")}
+      ${siteField("Instagram görünen", "iletisim.instagramDisplay")}
+      ${siteField("Konum etiket" + L("home.channelLabel"), "iletisim.konumLabel")}
+      ${siteField("Konum metin", "iletisim.konumValue")}
+      ${siteField("FormSubmit AJAX URL", "iletisim.formSubmitUrl", "url")}
+      ${siteField("Form konu (_subject)", "iletisim.formSubject")}
+      <h3 style="grid-column:1/-1;font-size:14px;margin:16px 0 8px">Anasayfa metinleri</h3>
+      ${siteField("Hero başlık" + L("home.heroTitle"), "home.heroTitle")}
+      ${[0,1,2].map(i => siteField(`Overlay satır ${i+1}` + L("home.heroOverlayLine"), `home.heroOverlay.${i}`)).join("")}
+      ${[0,1,2].map(i => siteField(`Sol şerit ${i+1}` + L("home.heroSideLine"), `home.heroSideLeft.${i}`)).join("")}
+      ${[0,1,2].map(i => siteField(`Sağ şerit ${i+1}`, `home.heroSideRight.${i}`)).join("")}
+      ${siteField("Bölüm: Duyurular" + L("home.sectionLabel"), "home.sectionDuyurular")}
+      ${siteField("Bölüm: Portfolyo", "home.sectionPortfolyo")}
+      ${siteField("Bölüm: Ürünler", "home.sectionUrunler")}
+      ${siteField("Bölüm: Yorumlar", "home.sectionYorumlar")}
+      ${siteField("Bölüm: İletişim", "home.sectionIletisim")}
+      ${siteField("Ürün önizleme link metni", "home.previewAllLink")}
+      ${siteField("İletişim başlık" + L("home.iletisimTitle"), "home.iletisimTitle")}
+      <div class="fg" style="grid-column:1/-1"><label>İletişim açıklama ${L("home.iletisimDesc")}</label><textarea rows="4" data-site-path="home.iletisimDesc">${esc(s.home?.iletisimDesc ?? "")}</textarea></div>
+      ${siteField("Kanal: E-posta etiket", "home.channelEmailLabel")}
+      ${siteField("Kanal: Instagram etiket", "home.channelInstagramLabel")}
+      <p style="grid-column:1/-1;font-size:12px;color:var(--muted)">Hero görselleri ve preload listesi için şimdilik <code>site.json</code> düzenleyin; bir sonraki adımda panelden sıra + yükleme eklenebilir.</p>
+    </div>`;
+}
+
+document.getElementById("site-save-btn").addEventListener("click", async () => {
+  const btn = document.getElementById("site-save-btn");
+  if (!data.site) return;
+  btn.disabled = true;
+  btn.textContent = "Kaydediliyor...";
+  try {
+    const clone = JSON.parse(JSON.stringify(data.site));
+    document.querySelectorAll("#site-form-wrap [data-site-path]").forEach((el) => {
+      const path = el.getAttribute("data-site-path");
+      if (!path) return;
+      const raw = el.tagName === "TEXTAREA" ? el.value : el.value.trim();
+      let val;
+      if (el.type === "number") val = Number(raw);
+      else val = raw;
+      if (path.includes("nav.links.") && path.endsWith(".label")) {
+        const m = path.match(/nav\.links\.(\d+)\.label/);
+        const i = Number(m[1]);
+        if (!clone.nav.links[i]) clone.nav.links[i] = { href: "", label: "" };
+        clone.nav.links[i].label = val;
+        return;
+      }
+      if (path.includes("nav.links.") && path.endsWith(".href")) {
+        const m = path.match(/nav\.links\.(\d+)\.href/);
+        const i = Number(m[1]);
+        if (!clone.nav.links[i]) clone.nav.links[i] = { href: "", label: "" };
+        clone.nav.links[i].href = val;
+        return;
+      }
+      if (path.startsWith("home.heroOverlay.")) {
+        const i = Number(path.split(".").pop());
+        if (!Array.isArray(clone.home.heroOverlay)) clone.home.heroOverlay = ["", "", ""];
+        clone.home.heroOverlay[i] = val;
+        return;
+      }
+      if (path.startsWith("home.heroSideLeft.")) {
+        const i = Number(path.split(".").pop());
+        if (!Array.isArray(clone.home.heroSideLeft)) clone.home.heroSideLeft = ["", "", ""];
+        clone.home.heroSideLeft[i] = val;
+        return;
+      }
+      if (path.startsWith("home.heroSideRight.")) {
+        const i = Number(path.split(".").pop());
+        if (!Array.isArray(clone.home.heroSideRight)) clone.home.heroSideRight = ["", "", ""];
+        clone.home.heroSideRight[i] = val;
+        return;
+      }
+      siteSetDeep(clone, path, val);
+    });
+    validateSite(clone);
+    clone.updatedAt = Date.now();
+    await saveSlug("site", clone);
+    data.site = clone;
+    toast("Site ayarları kaydedildi");
+  } catch (e) {
+    toast(e.message || String(e), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Kaydet";
+  }
+});
 
 // ─── DUYURULAR ───────────────────────────────────────────────────────────────
 async function loadDuyurular() {
@@ -873,24 +1082,61 @@ async function loadGaleri() {
 
 function renderGaleri() {
   const items = data.galeri.galeri;
-  document.getElementById("galeri-grid").innerHTML = items.map((g, i) => `
-    <div class="galeri-item">
-      <img src="${g.gorsel}" alt="${esc(g.alt||"")}">
-      <button class="galeri-del" onclick="delGaleri(${i})">✕</button>
+  const grid = document.getElementById("galeri-grid");
+  grid.innerHTML = items.map((g, i) => `
+    <div class="galeri-item" draggable="true" data-gidx="${i}">
+      <img src="${g.gorsel}" alt="${esc(g.alt || "")}" draggable="false">
+      <button type="button" class="galeri-del" data-del="${i}">✕</button>
     </div>`).join("") + `
     <label class="galeri-add">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       <span>Görsel Ekle</span>
       <input type="file" accept="image/*" multiple id="galeri-file-input">
     </label>`;
-  document.getElementById("galeri-file-input").addEventListener("change", async e => {
+
+  grid.querySelectorAll(".galeri-del").forEach((btn) => {
+    btn.addEventListener("click", () => delGaleri(Number(btn.dataset.del)));
+  });
+
+  let dragFrom = null;
+  grid.querySelectorAll(".galeri-item[draggable]").forEach((el) => {
+    el.addEventListener("dragstart", (e) => {
+      dragFrom = Number(el.dataset.gidx);
+      el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", String(dragFrom));
+    });
+    el.addEventListener("dragend", () => {
+      el.classList.remove("dragging");
+      dragFrom = null;
+    });
+    el.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    });
+    el.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const from = Number(e.dataTransfer.getData("text/plain"));
+      const to = Number(el.dataset.gidx);
+      if (Number.isNaN(from) || from === to) return;
+      const arr = data.galeri.galeri;
+      const [moved] = arr.splice(from, 1);
+      arr.splice(to, 0, moved);
+      renderGaleri();
+      toast("Sıra değişti — kaydetmeyi unutma");
+    });
+  });
+
+  document.getElementById("galeri-file-input").addEventListener("change", async (e) => {
     const files = Array.from(e.target.files);
     for (const file of files) {
       try {
         const url = await uploadMedia(file);
         data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
         toast(`${file.name} yüklendi`);
-      } catch (e) { toast(`${file.name}: ${e.message}`, "error"); }
+      } catch (err) {
+        toast(`${file.name}: ${err.message}`, "error");
+      }
     }
     renderGaleri();
   });

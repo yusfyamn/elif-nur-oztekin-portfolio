@@ -65,3 +65,8 @@ export async function getAtolyeGaleri() {
   const data = await fetchCmsOrStatic("atolye-galeri");
   return data.fotograflar ?? [];
 }
+
+/** Nav, footer, SEO, anasayfa sabit metinleri — site.json / KV */
+export async function getSite() {
+  return fetchCmsOrStatic("site");
+}

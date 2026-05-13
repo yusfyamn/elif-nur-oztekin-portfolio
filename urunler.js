@@ -2,7 +2,10 @@ import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
 import { getUrunler } from "./content.js";
+import { ensureSite } from "./site-chrome.js";
 import Lenis from "lenis";
+
+await ensureSite();
 
 const lenis = new Lenis();
 function rafLoop(time) {

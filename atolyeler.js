@@ -2,11 +2,14 @@ import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
 import { getAtolyeler, getAtolyeGaleri } from "./content.js";
+import { ensureSite } from "./site-chrome.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
+
+await ensureSite();
 
 const lenis = new Lenis();
 lenis.on("scroll", ScrollTrigger.update);

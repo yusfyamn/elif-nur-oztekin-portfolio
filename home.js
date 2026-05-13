@@ -2,6 +2,7 @@ import { initContactForm } from "./contact.js";
 import { initNavHover, initMobileMenu, setLenis } from "./nav.js";
 import { initTransitions } from "./transition.js";
 import { getDuyurular, getUrunler, getYorumlar } from "./content.js";
+import { ensureSite } from "./site-chrome.js";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { SplitText } from "gsap/SplitText";
@@ -10,6 +11,8 @@ import Lenis from "lenis";
 
 gsap.registerPlugin(CustomEase, SplitText, ScrollTrigger);
 CustomEase.create("hop", "0.85, 0, 0.15, 1");
+
+await ensureSite();
 
 function setVhProp() {
   document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
@@ -480,7 +483,7 @@ async function loadContent() {
 
 loadContent().catch(console.error);
 
-// ── Nav + form ─────────────────────────────────────────────
+// ── Nav + form (ensureSite modül başında) ───────────────────
 initNavHover();
 initMobileMenu();
 initContactForm();
