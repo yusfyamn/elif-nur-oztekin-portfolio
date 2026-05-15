@@ -22,6 +22,21 @@
       --sidebar-w: 220px;
       --radius: 8px;
       --shadow: 0 1px 4px rgba(0,0,0,0.08);
+      --inbox-cell-muted: #55544f;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #141413;
+      --surface: #1e1e1c;
+      --border: #3a3935;
+      --text: #eaeae6;
+      --muted: #9e9d98;
+      --accent: #dcdad4;
+      --accent-hover: #f0eee8;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --shadow: 0 1px 6px rgba(0,0,0,0.35);
+      --inbox-cell-muted: #b8b6ae;
     }
 
     body {
@@ -38,25 +53,65 @@
       border-radius: 12px; padding: 48px 40px; width: 360px;
       box-shadow: var(--shadow);
     }
-    .login-card h1 { font-size: 17px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.3px; }
-    .login-card p  { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
-    .login-card .form-group { margin-bottom: 14px; }
-    .login-card label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 5px; }
-    .login-card input {
+    .login-card h1 { font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.35px; }
+    .login-card p  { color: var(--muted); font-size: 13px; margin-bottom: 26px; line-height: 1.45; }
+    .login-card .form-group { margin-bottom: 16px; }
+    .login-card label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+    .login-card input[type="email"],
+    .login-card input[type="password"],
+    .login-card input[type="text"] {
       width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius);
       font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
     }
     .login-card input:focus { border-color: var(--accent); background: var(--surface); }
+    .login-password-wrap { position: relative; }
+    .login-password-wrap input { padding-right: 76px; }
+    .login-toggle-pw {
+      position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+      padding: 6px 10px; border: none; border-radius: 6px; background: transparent;
+      font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+    }
+    .login-toggle-pw:hover { color: var(--text); background: var(--surface); }
+    .login-remember-row {
+      display: flex; align-items: center; gap: 8px; margin: -6px 0 18px;
+      font-size: 13px; color: var(--text); user-select: none;
+    }
+    .login-remember-row input { width: auto; accent-color: var(--accent); cursor: pointer; }
+    .login-remember-row label { margin: 0; text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 13px; color: var(--text); cursor: pointer; }
     .btn-login {
       width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none;
       border-radius: var(--radius); cursor: pointer; font-size: 14px; font-weight: 500;
-      margin-top: 4px; transition: background 0.15s;
+      margin-top: 2px; transition: background 0.15s;
     }
     .btn-login:hover { background: var(--accent-hover); }
     .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
     .login-error {
-      color: var(--danger); font-size: 12px; margin-top: 12px;
-      display: none; text-align: center;
+      display: none;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 16px;
+      text-align: center;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+    html[data-theme="dark"] .login-error {
+      color: #fecaca;
+      background: #3a2222;
+      border-color: #6b3535;
+    }
+    .login-error.is-visible { display: block; }
+
+    html[data-theme="dark"] .btn-login {
+      background: #e6e4df;
+      color: #121211;
+    }
+    html[data-theme="dark"] .btn-login:hover {
+      background: #f2f0eb;
+      color: #0a0a09;
     }
 
     /* ── APP SHELL ── */
@@ -68,9 +123,21 @@
       background: var(--surface); border-right: 1px solid var(--border);
       display: flex; flex-direction: column; z-index: 100;
     }
-    .sidebar-brand { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+    }
+    .sidebar-brand-text { min-width: 0; }
     .sidebar-brand strong { display: block; font-size: 13px; font-weight: 600; }
     .sidebar-brand span { font-size: 11px; color: var(--muted); }
+    .theme-toggle {
+      flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      cursor: pointer; font-size: 17px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); background: var(--surface); }
     .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
     .nav-section { padding: 8px 16px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
     .nav-item {
@@ -153,6 +220,50 @@
     .badge-red   { background: #fde8e7; color: #c0392b; }
     .badge-gray  { background: #f0f0ee; color: #666; }
     .badge-blue  { background: #e8f0fe; color: #1a73e8; }
+    html[data-theme="dark"] .badge-green { background: #1e3a24; color: #a5d6a7; }
+    html[data-theme="dark"] .badge-red   { background: #3d2020; color: #f5b4b0; }
+    html[data-theme="dark"] .badge-gray  { background: #2c2c29; color: #c4c2bc; }
+    html[data-theme="dark"] .badge-blue  { background: #1a2d4a; color: #9ec5ff; }
+    html[data-theme="dark"] .btn-danger {
+      background: #352222;
+      color: #ffb4ad;
+      border-color: #5a3532;
+    }
+    html[data-theme="dark"] .btn-danger:hover { background: #422a28; }
+
+    /* Koyu temada --accent açık gri; birincil butonlarda koyu yazı + açık zemin */
+    html[data-theme="dark"] .btn-primary {
+      background: #e6e4df;
+      color: #121211;
+      border: 1px solid #5c5a54;
+    }
+    html[data-theme="dark"] .btn-primary:hover {
+      background: #f2f0eb;
+      color: #0a0a09;
+      border-color: #6e6c66;
+    }
+    html[data-theme="dark"] .btn-login {
+      background: #e6e4df;
+      color: #121211;
+    }
+    html[data-theme="dark"] .btn-login:hover {
+      background: #f2f0eb;
+      color: #0a0a09;
+    }
+    html[data-theme="dark"] .btn-secondary {
+      background: #2a2926;
+      color: #eaeae6;
+      border: 1px solid #4a4843;
+    }
+    html[data-theme="dark"] .btn-secondary:hover {
+      background: #343331;
+      color: #f5f4f0;
+      border-color: #5c5a54;
+    }
+    html[data-theme="dark"] #toast:not(.error) {
+      background: #e6e4df;
+      color: #121211;
+    }
 
     /* ── MODAL ── */
     .modal-overlay {
@@ -203,6 +314,14 @@
 
     /* ── GALERİ ── */
     .galeri-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+    #galeri-grid > .loading-state {
+      grid-column: 1 / -1;
+      width: 100%;
+      min-height: 220px;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+    }
     .galeri-item {
       position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
       border: 1px solid var(--border); background: var(--bg); cursor: grab;
@@ -222,6 +341,10 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; color: var(--muted); font-size: 12px; gap: 5px;
       transition: all 0.15s; position: relative; background: var(--surface);
+    }
+    .galeri-add svg,
+    .galeri-add .galeri-add-icon {
+      width: 22px; height: 22px; margin-bottom: 2px;
     }
     .galeri-add:hover { border-color: var(--accent); color: var(--accent); }
     .galeri-add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
@@ -249,11 +372,24 @@
       background: linear-gradient(165deg, #fafaf8 0%, #ebe9e2 100%);
       box-shadow: inset 0 0 0 1px rgba(45,45,42,0.07);
     }
+    html[data-theme="dark"] .dropzone.dropzone--active {
+      background: linear-gradient(165deg, #2a2a26 0%, #1f1f1c 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
     .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .dropzone img { max-height: 110px; max-width: 100%; border-radius: 4px; object-fit: contain; margin-bottom: 6px; }
+    .dropzone .dz-inner {
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+    }
+    .dropzone img {
+      max-height: 110px; max-width: 100%; border-radius: 4px; object-fit: contain;
+      margin-bottom: 6px; display: block; margin-left: auto; margin-right: auto;
+    }
 
-    .galeri-drop-hero { grid-column: 1 / -1; min-height: 112px; margin-bottom: 6px; }
-    .galeri-drop-hero svg { color: var(--muted); margin-bottom: 4px; }
+    .galeri-drop-hero { grid-column: 1 / -1; min-height: 124px; margin-bottom: 6px; }
+    .galeri-drop-hero .galeri-hero-icon {
+      width: 44px; height: 44px; margin-bottom: 8px; color: var(--muted); flex-shrink: 0;
+    }
+    .galeri-drop-hero .dz-inner strong { font-size: 14px; }
     .galeri-item .galeri-drag-hint {
       position: absolute; bottom: 0; left: 0; right: 0;
       font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
@@ -267,12 +403,19 @@
     .wave-admin-grid .galeri-item .galeri-del { font-size: 11px; }
 
     .inbox-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
-    .inbox-table th, .inbox-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .inbox-table th, .inbox-table td {
+      padding: 12px 12px; border-bottom: 1px solid var(--border);
+      vertical-align: middle; text-align: center;
+    }
     .inbox-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
-    .inbox-msg { max-width: 360px; white-space: pre-wrap; word-break: break-word; color: #444; font-size: 12px; }
+    .inbox-table td.inbox-msg {
+      text-align: center; max-width: 360px; white-space: pre-wrap; word-break: break-word;
+      color: var(--inbox-cell-muted); font-size: 12px;
+    }
+    .inbox-table td.inbox-actions { width: 1%; white-space: nowrap; }
 
     /* ── BILGI / PARAGRAF ROWS ── */
-    .bilgi-row, .para-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; }
+    .bilgi-row, .para-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
     .bilgi-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; background: var(--bg); outline: none; }
     .bilgi-row input:focus { border-color: var(--accent); }
     .para-row textarea { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; background: var(--bg); outline: none; resize: vertical; min-height: 72px; font-family: inherit; }
@@ -287,15 +430,22 @@
     <h1>ELİF NUR ÖZTEKİN</h1>
     <p>Yönetim paneline giriş yapın</p>
     <div class="form-group">
-      <label>E-posta</label>
-      <input type="email" id="login-email" placeholder="ornek@email.com" autocomplete="email">
+      <label for="login-email">E-posta</label>
+      <input type="email" id="login-email" placeholder="ornek@email.com" autocomplete="username" spellcheck="false">
     </div>
     <div class="form-group">
-      <label>Şifre</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      <label for="login-password">Şifre</label>
+      <div class="login-password-wrap">
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        <button type="button" class="login-toggle-pw" id="login-toggle-pw" aria-label="Şifreyi göster" aria-pressed="false">Göster</button>
+      </div>
     </div>
-    <button class="btn-login" id="login-btn">Giriş Yap</button>
-    <p class="login-error" id="login-error"></p>
+    <div class="login-remember-row">
+      <input type="checkbox" id="login-remember">
+      <label for="login-remember">Beni hatırla (yalnızca e-posta, bu cihazda)</label>
+    </div>
+    <button type="button" class="btn-login" id="login-btn">Giriş Yap</button>
+    <p class="login-error" id="login-error" role="alert" aria-live="polite"></p>
   </div>
 </div>
 
@@ -303,8 +453,11 @@
 <div id="app">
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <strong>ELİF NUR ÖZTEKİN</strong>
-      <span>Yönetim Paneli</span>
+      <div class="sidebar-brand-text">
+        <strong>ELİF NUR ÖZTEKİN</strong>
+        <span>Yönetim Paneli</span>
+      </div>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Koyu tema" title="Koyu / açık tema">☽</button>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">İçerik</div>
@@ -384,8 +537,7 @@
 
     <div class="page" id="page-yorumlar">
       <div class="page-header">
-        <div><h2>Yorumlar</h2><p>Müşteri yorumları</p></div>
-        <button class="btn btn-primary" id="yorum-add-btn">+ Yeni Ekle</button>
+        <div><h2>Yorumlar</h2><p>Müşteri yorumları — yalnızca mevcut kayıtlar düzenlenir.</p></div>
       </div>
       <div class="card"><div class="item-list" id="yorumlar-list"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
@@ -467,6 +619,10 @@
 <div id="toast"></div>
 
 <script>
+try {
+  if (localStorage.getItem("admin_theme") === "dark") document.documentElement.setAttribute("data-theme", "dark");
+} catch { /* private mode */ }
+
 // ─── CONFIG (meta > varsayılan) GitHub yok — KV tabanlı CMS Worker ───────────
 const CMS_API = (
   document.querySelector('meta[name="cms-api"]')?.getAttribute("content") || ""
@@ -476,6 +632,19 @@ const CMS_API = (
 let jwtToken = localStorage.getItem("admin_jwt") || null;
 let data = {};
 let modalSaveFn = null;
+
+/** Görsel seçimi → sunucu yalnızca Kaydet sonrası (R2/KV şişmesin) */
+const pendingImgById = Object.create(null);
+const pendingImgObjectUrlById = Object.create(null);
+/** Dalga slot indeksi → { file, objectUrl } */
+let wavePendingSlots = Object.create(null);
+
+const DZ_LABEL_IDLE =
+  "<strong>Görsel yükle</strong><span class=\"dz-hint\">Buraya sürükleyip bırak veya tıklayarak seç — sunucuya <strong>Kaydet</strong> ile gider</span>";
+const DZ_LABEL_STAGED =
+  "<strong>Görsel seçildi</strong><span class=\"dz-hint\">Sunucuya yüklemek için formu <strong>Kaydet</strong></span>";
+
+const ADMIN_REMEMBER_EMAIL_KEY = "admin_remember_email";
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
 function toast(msg, type = "ok") {
@@ -552,33 +721,81 @@ async function fileToWebpIfPossible(file) {
 }
 
 // ─── AUTH ────────────────────────────────────────────────────────────────────
+function applyRememberedLoginEmail() {
+  const em = document.getElementById("login-email");
+  const cb = document.getElementById("login-remember");
+  const saved = localStorage.getItem(ADMIN_REMEMBER_EMAIL_KEY);
+  if (em && saved) {
+    em.value = saved;
+    if (cb) cb.checked = true;
+  }
+}
+
+function setLoginError(msg) {
+  const errEl = document.getElementById("login-error");
+  if (!errEl) return;
+  if (msg) {
+    errEl.textContent = msg;
+    errEl.classList.add("is-visible");
+  } else {
+    errEl.textContent = "";
+    errEl.classList.remove("is-visible");
+  }
+}
+
 document.getElementById("login-btn").addEventListener("click", doLogin);
-document.getElementById("login-password").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+document.getElementById("login-email").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") doLogin();
+});
+document.getElementById("login-password").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") doLogin();
+});
+
+document.getElementById("login-toggle-pw").addEventListener("click", () => {
+  const inp = document.getElementById("login-password");
+  const btn = document.getElementById("login-toggle-pw");
+  if (!inp || !btn) return;
+  const show = inp.type === "password";
+  inp.type = show ? "text" : "password";
+  btn.textContent = show ? "Gizle" : "Göster";
+  btn.setAttribute("aria-label", show ? "Şifreyi gizle" : "Şifreyi göster");
+  btn.setAttribute("aria-pressed", show ? "true" : "false");
+});
 
 async function doLogin() {
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
-  const errEl = document.getElementById("login-error");
+  const rememberEl = document.getElementById("login-remember");
   const btn = document.getElementById("login-btn");
-  errEl.style.display = "none";
-  if (!email || !password) { errEl.textContent = "Lütfen tüm alanları doldurun."; errEl.style.display = "block"; return; }
-  btn.disabled = true; btn.textContent = "Giriş yapılıyor...";
+  setLoginError("");
+  if (!email || !password) {
+    setLoginError("Lütfen tüm alanları doldurun.");
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = "Giriş yapılıyor...";
   try {
     const res = await fetch(`${CMS_API}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(json.error || "Giriş başarısız");
     jwtToken = json.token;
     localStorage.setItem("admin_jwt", jwtToken);
+    if (rememberEl && rememberEl.checked) {
+      localStorage.setItem(ADMIN_REMEMBER_EMAIL_KEY, email);
+    } else {
+      localStorage.removeItem(ADMIN_REMEMBER_EMAIL_KEY);
+    }
     showApp();
   } catch (e) {
-    errEl.textContent = e.message;
-    errEl.style.display = "block";
+    const msg = e instanceof Error ? e.message : "Giriş başarısız";
+    setLoginError(msg);
   } finally {
-    btn.disabled = false; btn.textContent = "Giriş Yap";
+    btn.disabled = false;
+    btn.textContent = "Giriş Yap";
   }
 }
 
@@ -591,12 +808,51 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 function showApp() {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("app").style.display = "block";
+  initThemeToggle();
   navigateTo("duyurular");
+}
+
+function syncThemeToggleGlyph() {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  btn.textContent = dark ? "☀" : "☽";
+  btn.setAttribute("aria-label", dark ? "Açık temaya geç" : "Koyu temaya geç");
+}
+
+function initThemeToggle() {
+  syncThemeToggleGlyph();
+  const btn = document.getElementById("theme-toggle");
+  if (!btn || btn.dataset.bound === "1") return;
+  btn.dataset.bound = "1";
+  btn.addEventListener("click", () => {
+    if (document.documentElement.getAttribute("data-theme") === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+      try { localStorage.setItem("admin_theme", "light"); } catch { /* */ }
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+      try { localStorage.setItem("admin_theme", "dark"); } catch { /* */ }
+    }
+    syncThemeToggleGlyph();
+  });
 }
 
 function showLogin() {
   document.getElementById("login-screen").style.display = "flex";
   document.getElementById("app").style.display = "none";
+  const pw = document.getElementById("login-password");
+  const tg = document.getElementById("login-toggle-pw");
+  if (pw) {
+    pw.value = "";
+    pw.type = "password";
+  }
+  if (tg) {
+    tg.textContent = "Göster";
+    tg.setAttribute("aria-label", "Şifreyi göster");
+    tg.setAttribute("aria-pressed", "false");
+  }
+  setLoginError("");
+  applyRememberedLoginEmail();
 }
 
 // ─── ROUTING ─────────────────────────────────────────────────────────────────
@@ -609,6 +865,19 @@ document.querySelectorAll(".nav-item").forEach(item => {
 });
 
 function navigateTo(page) {
+  const overlay = document.getElementById("modal-overlay");
+  if (overlay && !overlay.classList.contains("hidden")) {
+    const mb = document.getElementById("modal-body");
+    if (mb) clearPendingImgUploadsInContainer(mb);
+    overlay.classList.add("hidden");
+    modalSaveFn = null;
+  }
+  const prevEl = document.querySelector(".page.active");
+  const prevPage = prevEl?.id?.replace("page-", "") || "";
+  if (prevPage === "galeri" && page !== "galeri") abandonGaleriStaging();
+  if (prevPage === "ana-portfolyo" && page !== "ana-portfolyo") revokeWaveStaging();
+  if (prevPage === "hakkimda" && page !== "hakkimda") clearPendingImgUploadById("h-img");
+
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(`page-${page}`).classList.add("active");
   loadPage(page);
@@ -630,13 +899,17 @@ async function loadPage(page) {
 
 // ─── MODAL ───────────────────────────────────────────────────────────────────
 function openModal(title, bodyHtml, onSave) {
+  const body = document.getElementById("modal-body");
+  if (body.innerHTML) clearPendingImgUploadsInContainer(body);
   document.getElementById("modal-title").textContent = title;
-  document.getElementById("modal-body").innerHTML = bodyHtml;
+  body.innerHTML = bodyHtml;
   document.getElementById("modal-overlay").classList.remove("hidden");
   modalSaveFn = onSave;
 }
 
 function closeModal() {
+  const body = document.getElementById("modal-body");
+  if (body) clearPendingImgUploadsInContainer(body);
   document.getElementById("modal-overlay").classList.add("hidden");
   modalSaveFn = null;
 }
@@ -648,37 +921,142 @@ document.getElementById("modal-save").addEventListener("click", async () => {
   if (!modalSaveFn) return;
   const btn = document.getElementById("modal-save");
   btn.disabled = true; btn.textContent = "Kaydediliyor...";
-  try { await modalSaveFn(); closeModal(); }
-  catch (e) { toast(e.message, "error"); }
+  try {
+    await flushPendingImgUploadsInContainer(document.getElementById("modal-body"));
+    await modalSaveFn();
+    closeModal();
+  } catch (e) { toast(e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = "Kaydet"; }
 });
 
-// ─── IMG UPLOAD WIDGET ────────────────────────────────────────────────────────
+// ─── Görsel staging (yalnızca Kaydet → /api/upload → R2/KV) ──────────────────
+function clearPendingImgUploadById(id) {
+  if (!id || (!pendingImgById[id] && !pendingImgObjectUrlById[id])) return;
+  const valEl = document.getElementById(`${id}-val`);
+  const prev = document.getElementById(`${id}-preview`);
+  const label = document.getElementById(`${id}-label`);
+  const old = valEl && valEl.value ? valEl.value.trim() : "";
+  if (pendingImgObjectUrlById[id]) {
+    URL.revokeObjectURL(pendingImgObjectUrlById[id]);
+    delete pendingImgObjectUrlById[id];
+  }
+  delete pendingImgById[id];
+  if (prev) {
+    if (old) {
+      prev.src = old;
+      prev.style.display = "block";
+    } else {
+      prev.removeAttribute("src");
+      prev.style.display = "none";
+    }
+  }
+  if (label) label.innerHTML = DZ_LABEL_IDLE;
+}
+
+function clearPendingImgUploadsInContainer(root) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+  const seen = new Set();
+  root.querySelectorAll("[data-img-widget]").forEach((el) => {
+    const wid = el.getAttribute("data-img-widget");
+    if (!wid || seen.has(wid)) return;
+    seen.add(wid);
+    clearPendingImgUploadById(wid);
+  });
+}
+
+async function flushPendingImgUpload(id) {
+  const file = pendingImgById[id];
+  if (!file) return;
+  const valEl = document.getElementById(`${id}-val`);
+  const prev = document.getElementById(`${id}-preview`);
+  const label = document.getElementById(`${id}-label`);
+  if (pendingImgObjectUrlById[id]) {
+    URL.revokeObjectURL(pendingImgObjectUrlById[id]);
+    delete pendingImgObjectUrlById[id];
+  }
+  delete pendingImgById[id];
+  const url = await uploadMedia(file);
+  if (valEl) valEl.value = url;
+  if (prev) {
+    prev.src = url;
+    prev.style.display = "block";
+  }
+  if (label) label.innerHTML = DZ_LABEL_IDLE;
+}
+
+async function flushPendingImgUploadsInContainer(root) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+  const ids = [];
+  const seen = new Set();
+  root.querySelectorAll("[data-img-widget]").forEach((el) => {
+    const wid = el.getAttribute("data-img-widget");
+    if (!wid || seen.has(wid)) return;
+    seen.add(wid);
+    if (pendingImgById[wid]) ids.push(wid);
+  });
+  for (const wid of ids) await flushPendingImgUpload(wid);
+}
+
+function revokeWaveStaging() {
+  for (const k of Object.keys(wavePendingSlots)) {
+    const slot = wavePendingSlots[k];
+    if (slot && slot.objectUrl) URL.revokeObjectURL(slot.objectUrl);
+  }
+  wavePendingSlots = Object.create(null);
+}
+
+function revokeGaleriStaging(galeriData) {
+  if (!galeriData || !Array.isArray(galeriData.galeri)) return;
+  for (const item of galeriData.galeri) {
+    if (item && item.gorsel && String(item.gorsel).startsWith("blob:")) {
+      URL.revokeObjectURL(item.gorsel);
+    }
+  }
+}
+
+function abandonGaleriStaging() {
+  if (!data.galeri || !Array.isArray(data.galeri.galeri)) return;
+  for (let i = data.galeri.galeri.length - 1; i >= 0; i--) {
+    const g = data.galeri.galeri[i];
+    if (g && g._pendingFile) {
+      if (g.gorsel && String(g.gorsel).startsWith("blob:")) URL.revokeObjectURL(g.gorsel);
+      data.galeri.galeri.splice(i, 1);
+    }
+  }
+}
+
 function imgWidget(id, src, folder) {
   const has = src ? "block" : "none";
   return `<div class="dropzone img-upload" data-img-widget="${id}">
     <div class="dz-inner">
       <img id="${id}-preview" src="${src || ""}" alt="" style="display:${has};max-height:110px">
-      <p id="${id}-label"><strong>Görsel yükle</strong><span class="dz-hint">Buraya sürükleyip bırak veya tıklayarak seç</span></p>
+      <p id="${id}-label">${DZ_LABEL_IDLE}</p>
     </div>
     <input type="file" accept="image/*" id="${id}-file" data-folder="${folder}">
     <input type="hidden" id="${id}-val" value="${src || ""}">
   </div>`;
 }
 
-async function runImgUpload(id, file) {
+async function stageImgUpload(id, file) {
   const label = document.getElementById(`${id}-label`);
   const valEl = document.getElementById(`${id}-val`);
   const prev = document.getElementById(`${id}-preview`);
-  if (!file || !file.type.startsWith("image/")) return;
-  label.innerHTML = "<strong>Yükleniyor…</strong>";
+  if (!file || !file.type.startsWith("image/") || !label || !valEl || !prev) return;
+  label.innerHTML = "<strong>İşleniyor…</strong><span class=\"dz-hint\">WebP / boyut</span>";
   try {
-    const url = await uploadMedia(file);
-    valEl.value = url;
-    prev.src = url;
+    const optimized = await fileToWebpIfPossible(file);
+    if (pendingImgObjectUrlById[id]) {
+      URL.revokeObjectURL(pendingImgObjectUrlById[id]);
+      delete pendingImgObjectUrlById[id];
+    }
+    delete pendingImgById[id];
+    const objectUrl = URL.createObjectURL(optimized);
+    pendingImgById[id] = optimized;
+    pendingImgObjectUrlById[id] = objectUrl;
+    prev.src = objectUrl;
     prev.style.display = "block";
-    label.innerHTML = "<strong>Görsel yükle</strong><span class=\"dz-hint\">Buraya sürükleyip bırak veya tıklayarak seç</span>";
-    toast("Görsel yüklendi");
+    label.innerHTML = DZ_LABEL_STAGED;
+    toast("Kaydet deyince sunucuya gider");
   } catch (e) {
     label.innerHTML = "<strong>Hata</strong><span class=\"dz-hint\">Tekrar dene</span>";
     toast(e.message, "error");
@@ -693,7 +1071,7 @@ function bindImg(id) {
     const file = e.target.files[0];
     e.target.value = "";
     if (!file) return;
-    await runImgUpload(id, file);
+    await stageImgUpload(id, file);
   });
   if (!wrap) return;
   let dragDepth = 0;
@@ -719,7 +1097,7 @@ function bindImg(id) {
     dragDepth = 0;
     wrap.classList.remove("dropzone--active");
     const file = e.dataTransfer?.files?.[0];
-    if (file) await runImgUpload(id, file);
+    if (file) await stageImgUpload(id, file);
   });
 }
 
@@ -879,6 +1257,7 @@ document.getElementById("site-save-btn").addEventListener("click", async () => {
 const WAVE_DEFAULT_SEQ = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3];
 
 async function loadAnaPortfolyo() {
+  revokeWaveStaging();
   const wrap = document.getElementById("ana-port-wrap");
   wrap.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
   data.site = await loadSlug("site");
@@ -918,10 +1297,14 @@ function renderAnaPortfolyo() {
     const f = e.target.files[0];
     if (!f || repIdx === null) return;
     try {
-      const url = await uploadMedia(f);
-      data.site.home.portfolioWaveImages[repIdx] = url;
-      renderAnaPortfolyo();
-      toast("Görsel güncellendi — Kaydet");
+      const optimized = await fileToWebpIfPossible(f);
+      const slot = wavePendingSlots[repIdx];
+      if (slot && slot.objectUrl) URL.revokeObjectURL(slot.objectUrl);
+      const objectUrl = URL.createObjectURL(optimized);
+      wavePendingSlots[repIdx] = { file: optimized, objectUrl };
+      const cell = wrap.querySelector(`[data-wave-i="${repIdx}"] img`);
+      if (cell) cell.src = objectUrl;
+      toast("Kaydet ile sunucuya yüklenir");
     } catch (err) {
       toast(err.message, "error");
     }
@@ -944,13 +1327,23 @@ function renderAnaPortfolyo() {
       const from = Number(e.dataTransfer.getData("text/plain"));
       const to = Number(el.dataset.waveI);
       if (Number.isNaN(from) || from === to) return;
+      const hadPending = Object.keys(wavePendingSlots).length > 0;
+      if (hadPending) revokeWaveStaging();
       const a = data.site.home.portfolioWaveImages;
       const [moved] = a.splice(from, 1);
       a.splice(to, 0, moved);
       renderAnaPortfolyo();
-      toast("Sıra değişti — Kaydet");
+      toast(hadPending ? "Sıra değişti; bekleyen yerel görseller sıfırlandı — gerekirse ↻ ile yeniden seç, sonra Kaydet" : "Sıra değişti — Kaydet");
     });
   });
+
+  for (const k of Object.keys(wavePendingSlots)) {
+    const idx = Number(k);
+    const slot = wavePendingSlots[k];
+    if (!slot || !slot.objectUrl || Number.isNaN(idx)) continue;
+    const cell = wrap.querySelector(`[data-wave-i="${idx}"] img`);
+    if (cell) cell.src = slot.objectUrl;
+  }
 }
 
 document.getElementById("ana-port-save-btn").addEventListener("click", async () => {
@@ -958,6 +1351,15 @@ document.getElementById("ana-port-save-btn").addEventListener("click", async () 
   btn.disabled = true;
   btn.textContent = "Kaydediliyor...";
   try {
+    const pendingKeys = Object.keys(wavePendingSlots).map(Number).sort((a, b) => a - b);
+    for (const idx of pendingKeys) {
+      const slot = wavePendingSlots[idx];
+      if (!slot || !slot.file) continue;
+      const url = await uploadMedia(slot.file);
+      if (slot.objectUrl) URL.revokeObjectURL(slot.objectUrl);
+      delete wavePendingSlots[idx];
+      data.site.home.portfolioWaveImages[idx] = url;
+    }
     const w = data.site.home.portfolioWaveImages;
     if (!Array.isArray(w) || w.length !== 12 || w.some((x) => typeof x !== "string" || !x.trim())) {
       throw new Error("12 geçerli görsel URL gerekli");
@@ -965,6 +1367,8 @@ document.getElementById("ana-port-save-btn").addEventListener("click", async () 
     validateSite(data.site);
     data.site.updatedAt = Date.now();
     await saveSlug("site", data.site);
+    wavePendingSlots = Object.create(null);
+    renderAnaPortfolyo();
     toast("Portfolyo dalgası kaydedildi");
   } catch (e) {
     toast(e.message || String(e), "error");
@@ -1034,24 +1438,31 @@ function renderInboxTable(items) {
     .map((row) => {
       const d = new Date(row.createdAt);
       const ds = Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("tr-TR");
-      return `<tr><td>${esc(ds)}</td><td>${esc(row.ad)}</td><td>${esc(row.email)}</td><td>${esc(row.konu)}</td><td class="inbox-msg">${esc(row.mesaj)}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="delInboxMsg(${JSON.stringify(
-        row.id
-      )})">Sil</button></td></tr>`;
+      const idAttr = esc(String(row.id ?? ""));
+      return `<tr><td>${esc(ds)}</td><td>${esc(row.ad)}</td><td>${esc(row.email)}</td><td>${esc(row.konu)}</td><td class="inbox-msg">${esc(row.mesaj)}</td><td class="inbox-actions"><button type="button" class="btn btn-danger btn-sm" data-inbox-del="${idAttr}">Sil</button></td></tr>`;
     })
     .join("")}</tbody></table>`;
 }
 
-window.delInboxMsg = async function (id) {
+document.getElementById("inbox-wrap").addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-inbox-del]");
+  if (!btn) return;
+  e.preventDefault();
+  const id = btn.getAttribute("data-inbox-del");
   if (!id || !confirm("Bu mesaj silinsin mi?")) return;
   try {
-    data.contactInbox.items = (data.contactInbox.items || []).filter((x) => x.id !== id);
+    if (!data.contactInbox || !Array.isArray(data.contactInbox.items)) {
+      toast("Önce sayfayı yenileyin.", "error");
+      return;
+    }
+    data.contactInbox.items = data.contactInbox.items.filter((x) => String(x.id) !== String(id));
     await api("PUT", "/api/admin/contact-inbox", { items: data.contactInbox.items });
     document.getElementById("inbox-wrap").innerHTML = renderInboxTable(data.contactInbox.items);
     toast("Silindi");
-  } catch (e) {
-    toast(e.message, "error");
+  } catch (err) {
+    toast(err.message || String(err), "error");
   }
-};
+});
 
 async function loadIletisimAdmin() {
   const fwrap = document.getElementById("iletisim-form-wrap");
@@ -1201,8 +1612,9 @@ function renderUrunler() {
 
 window.editUrun = function(idx) {
   const u = idx === -1
-    ? { isim:"", kategori:"seramik", fiyat:0, gorsel:"", gorsel_alt:"", rozet:"", sira: data.urunler.urunler.length+1 }
+    ? { isim:"", kategori:"seramik", fiyat:0, gorsel:"", gorsel_alt:"", rozet:"", shopier_url:"", sira: data.urunler.urunler.length+1 }
     : { ...data.urunler.urunler[idx] };
+  if (typeof u.shopier_url !== "string") u.shopier_url = "";
   openModal(idx === -1 ? "Yeni Ürün" : "Ürün Düzenle", `
     <div class="form-grid">
       <div class="fg"><label>Ürün Adı</label><input id="u-isim" value="${esc(u.isim)}"></div>
@@ -1218,6 +1630,7 @@ window.editUrun = function(idx) {
       </div>
       <div class="fg"><label>Görsel</label>${imgWidget("u-img", u.gorsel, "urunler")}</div>
       <div class="fg"><label>Görsel Alt Metni</label><input id="u-alt" value="${esc(u.gorsel_alt||"")}"></div>
+      <div class="fg"><label>Shopier satın alma linki</label><input type="url" id="u-shopier" placeholder="https://…" value="${esc(u.shopier_url||"")}"></div>
       <div class="form-grid form-grid-2">
         <div class="fg"><label>Rozet</label>
           <select id="u-rozet">
@@ -1234,6 +1647,7 @@ window.editUrun = function(idx) {
     u.isim = v("u-isim"); u.kategori = v("u-kat");
     u.fiyat = parseFloat(v("u-fiyat")) || 0;
     u.gorsel = v("u-img-val"); u.gorsel_alt = v("u-alt");
+    u.shopier_url = v("u-shopier").trim();
     u.rozet = v("u-rozet"); u.sira = parseInt(v("u-sira")) || 0;
     if (idx === -1) data.urunler.urunler.push(u);
     else data.urunler.urunler[idx] = u;
@@ -1377,10 +1791,9 @@ function renderYorumlar() {
 }
 
 window.editYorum = function(idx) {
-  const y = idx === -1
-    ? { isim:"", metin:"", yildiz:5, stil:"normal", sira: data.yorumlar.yorumlar.length+1 }
-    : { ...data.yorumlar.yorumlar[idx] };
-  openModal(idx === -1 ? "Yeni Yorum" : "Yorum Düzenle", `
+  if (typeof idx !== "number" || idx < 0 || idx >= data.yorumlar.yorumlar.length) return;
+  const y = { ...data.yorumlar.yorumlar[idx] };
+  openModal("Yorum Düzenle", `
     <div class="form-grid">
       <div class="fg"><label>İsim</label><input id="y-isim" value="${esc(y.isim)}"></div>
       <div class="fg"><label>Yorum Metni</label><textarea id="y-metin">${esc(y.metin)}</textarea></div>
@@ -1400,8 +1813,8 @@ window.editYorum = function(idx) {
     y.isim = v("y-isim"); y.metin = v("y-metin");
     y.yildiz = parseInt(v("y-yildiz")); y.stil = v("y-stil");
     y.sira = parseInt(v("y-sira")) || 0;
-    if (idx === -1) data.yorumlar.yorumlar.push(y);
-    else data.yorumlar.yorumlar[idx] = y;
+    if (idx < 0 || idx >= data.yorumlar.yorumlar.length) return;
+    data.yorumlar.yorumlar[idx] = y;
     await saveSlug("yorumlar", data.yorumlar);
     renderYorumlar(); toast("Yorum kaydedildi");
   });
@@ -1414,10 +1827,8 @@ window.delYorum = async function(idx) {
   renderYorumlar(); toast("Silindi");
 };
 
-document.getElementById("yorum-add-btn").addEventListener("click", () => editYorum(-1));
-
-// ─── GALERİ ──────────────────────────────────────────────────────────────────
 async function loadGaleri() {
+  revokeGaleriStaging(data.galeri);
   document.getElementById("galeri-grid").innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
   data.galeri = await loadSlug("galeri");
   renderGaleri();
@@ -1426,12 +1837,16 @@ async function loadGaleri() {
 function renderGaleri() {
   const items = data.galeri.galeri;
   const grid = document.getElementById("galeri-grid");
+  const heroIcon =
+    '<svg class="galeri-hero-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.75"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  const addIcon =
+    '<svg class="galeri-add-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M12 7.5v9M7.5 12h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   grid.innerHTML = `
     <div class="dropzone galeri-drop-hero" id="galeri-main-drop">
       <div class="dz-inner">
-        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><rect x="4" y="4" width="16" height="16" rx="2.5" opacity="0.2"/></svg>
+        ${heroIcon}
         <strong>Görselleri buraya sürükleyip bırak</strong>
-        <span class="dz-hint">Birden fazla dosya. Kartları sürükleyerek sırayı değiştir; işin bitince <strong>Kaydet</strong>.</span>
+        <span class="dz-hint">Birden fazla dosya. Önizleme hemen; sunucuya <strong>Kaydet</strong> ile gider. Sürükleyerek sırala.</span>
       </div>
     </div>` + items.map((g, i) => `
     <div class="galeri-item" draggable="true" data-gidx="${i}">
@@ -1440,7 +1855,7 @@ function renderGaleri() {
       <span class="galeri-drag-hint" aria-hidden="true">Sürükle — sıra</span>
     </div>`).join("") + `
     <label class="galeri-add">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      ${addIcon}
       <span>Dosya seç</span>
       <input type="file" accept="image/*" multiple id="galeri-file-input">
     </label>`;
@@ -1483,9 +1898,15 @@ function renderGaleri() {
     e.target.value = "";
     for (const file of files) {
       try {
-        const url = await uploadMedia(file);
-        data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
-        toast(`${file.name} yüklendi`);
+        const optimized = await fileToWebpIfPossible(file);
+        const blobUrl = URL.createObjectURL(optimized);
+        data.galeri.galeri.push({
+          gorsel: blobUrl,
+          alt: "",
+          sira: data.galeri.galeri.length + 1,
+          _pendingFile: optimized,
+        });
+        toast(`${file.name} eklendi — Kaydet ile yüklenir`);
       } catch (err) {
         toast(`${file.name}: ${err.message}`, "error");
       }
@@ -1509,9 +1930,15 @@ function renderGaleri() {
       const files = Array.from(e.dataTransfer?.files || []).filter((f) => f.type.startsWith("image/"));
       for (const file of files) {
         try {
-          const url = await uploadMedia(file);
-          data.galeri.galeri.push({ gorsel: url, alt: "", sira: data.galeri.galeri.length + 1 });
-          toast(`${file.name} yüklendi`);
+          const optimized = await fileToWebpIfPossible(file);
+          const blobUrl = URL.createObjectURL(optimized);
+          data.galeri.galeri.push({
+            gorsel: blobUrl,
+            alt: "",
+            sira: data.galeri.galeri.length + 1,
+            _pendingFile: optimized,
+          });
+          toast(`${file.name} eklendi — Kaydet ile yüklenir`);
         } catch (err) {
           toast(`${file.name}: ${err.message}`, "error");
         }
@@ -1523,6 +1950,8 @@ function renderGaleri() {
 
 window.delGaleri = function(idx) {
   if (!confirm("Galeriden kaldırılsın mı?")) return;
+  const g = data.galeri.galeri[idx];
+  if (g && g.gorsel && String(g.gorsel).startsWith("blob:")) URL.revokeObjectURL(g.gorsel);
   data.galeri.galeri.splice(idx, 1);
   renderGaleri();
   toast("Kaldırıldı — kaydetmeyi unutmayın");
@@ -1532,8 +1961,21 @@ document.getElementById("galeri-save-btn").addEventListener("click", async () =>
   const btn = document.getElementById("galeri-save-btn");
   btn.disabled = true; btn.textContent = "Kaydediliyor...";
   try {
-    data.galeri.galeri = data.galeri.galeri.map((g, i) => ({ ...g, sira: i + 1 }));
+    const next = [];
+    for (let i = 0; i < data.galeri.galeri.length; i++) {
+      const g = data.galeri.galeri[i];
+      const alt = g.alt != null ? String(g.alt) : "";
+      if (g._pendingFile) {
+        const url = await uploadMedia(g._pendingFile);
+        if (g.gorsel && String(g.gorsel).startsWith("blob:")) URL.revokeObjectURL(g.gorsel);
+        next.push({ gorsel: url, alt, sira: i + 1 });
+      } else {
+        next.push({ gorsel: g.gorsel, alt, sira: i + 1 });
+      }
+    }
+    data.galeri.galeri = next.map((item, i) => ({ ...item, sira: i + 1 }));
     await saveSlug("galeri", data.galeri);
+    renderGaleri();
     toast("Galeri kaydedildi");
   } catch (e) { toast(e.message, "error"); }
   finally { btn.disabled = false; btn.textContent = "Kaydet"; }
@@ -1548,11 +1990,12 @@ async function loadHakkimda() {
 }
 
 function renderHakkimda() {
+  clearPendingImgUploadById("h-img");
   const h = data.hakkimda;
   const parasHtml = (h.paragraflar||[]).map((p, i) => `
     <div class="para-row">
       <textarea data-para="${i}" rows="3">${esc(p)}</textarea>
-      <button class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>
+      <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>
     </div>`).join("");
   document.getElementById("hakkimda-form-wrap").innerHTML = `
     <div class="form-grid">
@@ -1572,7 +2015,7 @@ window.addPara = function() {
   const i = Date.now();
   const div = document.createElement("div");
   div.className = "para-row";
-  div.innerHTML = `<textarea data-para="${i}" rows="3"></textarea><button class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>`;
+  div.innerHTML = `<textarea data-para="${i}" rows="3"></textarea><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.para-row').remove()">✕</button>`;
   wrap.appendChild(div);
 };
 
@@ -1580,6 +2023,7 @@ document.getElementById("hakkimda-save-btn").addEventListener("click", async () 
   const btn = document.getElementById("hakkimda-save-btn");
   btn.disabled = true; btn.textContent = "Kaydediliyor...";
   try {
+    await flushPendingImgUploadsInContainer(document.getElementById("hakkimda-form-wrap"));
     data.hakkimda.baslik = v("h-baslik");
     data.hakkimda.alt_baslik = v("h-altbaslik");
     data.hakkimda.profil_foto = v("h-img-val");
@@ -1601,6 +2045,7 @@ if (jwtToken) {
     .then(() => showApp())
     .catch(() => { localStorage.removeItem("admin_jwt"); jwtToken = null; showLogin(); });
 } else {
+  applyRememberedLoginEmail();
   showLogin();
 }
 </script>

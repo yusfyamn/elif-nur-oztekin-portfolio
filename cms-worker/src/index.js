@@ -203,13 +203,18 @@ export default {
       } catch {
         return err("Geçersiz istek", 400, origin);
       }
-      const { email, password } = body;
-      if (email !== env.ADMIN_EMAIL || password !== env.ADMIN_PASSWORD) {
+      const emailIn = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+      const passIn = typeof body.password === "string" ? body.password.trim() : "";
+      const adminEmail =
+        typeof env.ADMIN_EMAIL === "string" ? env.ADMIN_EMAIL.trim().toLowerCase() : "";
+      const adminPass =
+        typeof env.ADMIN_PASSWORD === "string" ? String(env.ADMIN_PASSWORD).trim() : "";
+      if (!emailIn || !passIn || emailIn !== adminEmail || passIn !== adminPass) {
         return err("E-posta veya şifre hatalı", 401, origin);
       }
       const token = await signJwt(
         {
-          sub: email,
+          sub: emailIn,
           iat: Math.floor(Date.now() / 1000),
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
         },

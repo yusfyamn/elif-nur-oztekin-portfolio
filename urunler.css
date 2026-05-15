@@ -66,6 +66,16 @@ body { background-color: var(--bg); }
   cursor: pointer;
 }
 
+a.urun-card--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.urun-card--link:focus-visible {
+  outline: 2px solid var(--dark);
+  outline-offset: 3px;
+}
+
 .urun-card.hidden {
   display: none;
 }

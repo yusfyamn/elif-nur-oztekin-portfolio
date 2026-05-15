@@ -22,12 +22,26 @@ initTransitions();
 
 const kategoriMap = { seramik: "Seramik", tekstil: "Tekstil", kagit: "Kağıt & Baskı" };
 
-function buildUrunCard(urun) {
-  const article = document.createElement("article");
-  article.className = "urun-card";
-  article.dataset.category = urun.kategori;
+function shopierPurchaseHref(urun) {
+  const s = typeof urun.shopier_url === "string" ? urun.shopier_url.trim() : "";
+  if (!s) return "";
+  return /^https:\/\//i.test(s) ? s : "";
+}
 
-  article.innerHTML = `
+function buildUrunCard(urun) {
+  const href = shopierPurchaseHref(urun);
+  const outer = document.createElement(href ? "a" : "article");
+  if (href) {
+    outer.href = href;
+    outer.target = "_blank";
+    outer.rel = "noopener noreferrer";
+    outer.className = "urun-card urun-card--link";
+  } else {
+    outer.className = "urun-card";
+  }
+  outer.dataset.category = urun.kategori;
+
+  outer.innerHTML = `
     <div class="urun-img">
       <img src="${urun.gorsel}" alt="${urun.gorsel_alt ?? urun.isim}" />
       ${urun.rozet ? `<span class="urun-badge">${urun.rozet}</span>` : ""}
@@ -38,7 +52,7 @@ function buildUrunCard(urun) {
       <p class="urun-fiyat">₺${urun.fiyat}</p>
     </div>
   `;
-  return article;
+  return outer;
 }
 
 const siparisCard = `

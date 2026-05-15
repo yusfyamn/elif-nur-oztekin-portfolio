@@ -426,10 +426,21 @@ function initDuyuruSlider(duyurular) {
   startTimer();
 }
 
+function shopierPurchaseHref(urun) {
+  const s = typeof urun.shopier_url === "string" ? urun.shopier_url.trim() : "";
+  if (!s) return "";
+  return /^https:\/\//i.test(s) ? s : "";
+}
+
 // ── Ürünler önizleme ───────────────────────────────────────
 function buildUrunPreviewCard(urun) {
+  const shopier = shopierPurchaseHref(urun);
   const a = document.createElement("a");
-  a.href = "/urunler";
+  a.href = shopier || "/urunler";
+  if (shopier) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
   a.className = "preview-card";
   a.setAttribute("data-reveal", "card");
 
