@@ -23,6 +23,7 @@
   ],
   "rewrites": [
     { "source": "/cms-api/:path*", "destination": "https://elif-nur-oztekin-cms.yusufyaman209.workers.dev/:path*" },
+    { "source": "/r/:slug", "destination": "https://elif-nur-oztekin-cms.yusufyaman209.workers.dev/r/:slug" },
     { "source": "/", "destination": "/home.html" },
     { "source": "/anasayfa", "destination": "/home.html" },
     { "source": "/urunler", "destination": "/urunler.html" },

@@ -421,6 +421,22 @@
     .para-row textarea { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; background: var(--bg); outline: none; resize: vertical; min-height: 72px; font-family: inherit; }
     .para-row textarea:focus { border-color: var(--accent); }
 
+    /* ── QR ── */
+    .qr-row { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .qr-row:last-child { border-bottom: none; }
+    .qr-thumb { width: 64px; height: 64px; flex-shrink: 0; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; display: flex; align-items: center; justify-content: center; }
+    .qr-thumb canvas, .qr-thumb svg { width: 60px; height: 60px; }
+    .qr-info { flex: 1; min-width: 0; }
+    .qr-info strong { display: block; font-size: 14px; font-weight: 600; }
+    .qr-info .qr-slug { font-size: 12px; color: var(--accent); font-family: monospace; margin: 2px 0; }
+    .qr-info .qr-url { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+    .qr-info .qr-hits { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .qr-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+    .qr-download-bar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .qr-preview-wrap { text-align: center; margin-bottom: 16px; }
+    .qr-preview-wrap canvas { border: 1px solid var(--border); border-radius: var(--radius); }
+
     /* ── MOBİL (≤ 768px) ── */
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
@@ -618,6 +634,11 @@
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
         Galeri
       </div>
+      <div class="nav-section" style="margin-top:8px">Araçlar</div>
+      <div class="nav-item" data-page="qr-links">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2zM18 14h3M14 18h3M18 18h3M20 20v2"/></svg>
+        QR Linkler
+      </div>
       <div class="nav-section" style="margin-top:8px">Sayfa</div>
       <div class="nav-item" data-page="hakkimda">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>
@@ -692,6 +713,14 @@
         <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ziyaretçi formu Worker üzerinden kaydedilir; aynı anda FormSubmit ile e-posta gider.</p>
         <div id="inbox-wrap"><div class="loading-state"><div class="spinner"></div></div></div>
       </div>
+    </div>
+
+    <div class="page" id="page-qr-links">
+      <div class="page-header">
+        <div><h2>QR Linkler</h2><p>Kalıcı QR kodları — link değişse bile QR bozulmaz</p></div>
+        <button class="btn btn-primary" id="qr-add-btn">+ Yeni QR</button>
+      </div>
+      <div class="card" id="qr-list-wrap"><div class="item-list" id="qr-list"><div class="loading-state"><div class="spinner"></div></div></div></div>
     </div>
 
     <div class="page" id="page-galeri">
@@ -1012,7 +1041,7 @@ function navigateTo(page) {
 
 async function loadPage(page) {
   try {
-    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda, site: loadSite, "ana-portfolyo": loadAnaPortfolyo, "ana-urunler": loadAnaUrunler, iletisim: loadIletisimAdmin };
+    const map = { duyurular: loadDuyurular, urunler: loadUrunler, atolyeler: loadAtolyeler, yorumlar: loadYorumlar, galeri: loadGaleri, hakkimda: loadHakkimda, site: loadSite, "ana-portfolyo": loadAnaPortfolyo, "ana-urunler": loadAnaUrunler, iletisim: loadIletisimAdmin, "qr-links": loadQrLinks };
     if (map[page]) await map[page]();
   } catch (e) {
     if (e.message.includes("401") || e.message.toLowerCase().includes("yetkisiz")) {
@@ -2164,6 +2193,203 @@ document.getElementById("hakkimda-save-btn").addEventListener("click", async () 
 // ─── YARDIMCILAR ─────────────────────────────────────────────────────────────
 function v(id) { return (document.getElementById(id)?.value ?? "").trim(); }
 function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// ─── QR LİNKLER ─────────────────────────────────────────────────────────────
+
+/** QR matris üret — saf JS, dışarıdan kütüphane yok (QR Code Model 2, hata düzeltme L) */
+const QR = (() => {
+  // qrcodegen kütüphanesini dinamik yükle (Nayuki, MIT lisanslı CDN)
+  let _lib = null;
+  async function getLib() {
+    if (_lib) return _lib;
+    await new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    _lib = window.QRCode;
+    return _lib;
+  }
+
+  async function drawCanvas(text, size = 200) {
+    const Lib = await getLib();
+    const div = document.createElement("div");
+    new Lib(div, { text, width: size, height: size, colorDark: "#1a1a18", colorLight: "#ffffff", correctLevel: Lib.CorrectLevel.M });
+    await new Promise(r => setTimeout(r, 60));
+    return div.querySelector("canvas") || div.querySelector("img");
+  }
+
+  return { drawCanvas };
+})();
+
+const QR_BASE = "https://www.elifnuroztekin.com/r/";
+
+async function loadQrLinks() {
+  const list = document.getElementById("qr-list");
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
+  const data = await api("GET", "/api/admin/qr-links");
+  const items = Array.isArray(data.items) ? data.items : [];
+  if (!items.length) {
+    list.innerHTML = '<div class="loading-state" style="padding:40px">Henüz QR link yok. + Yeni QR ile başla.</div>';
+    return;
+  }
+  list.innerHTML = "";
+  for (const item of items) {
+    const row = document.createElement("div");
+    row.className = "qr-row";
+    row.dataset.slug = item.slug;
+    const thumb = document.createElement("div");
+    thumb.className = "qr-thumb";
+    row.innerHTML = `
+      <div class="qr-thumb" id="qr-thumb-${esc(item.slug)}"></div>
+      <div class="qr-info">
+        <strong>${esc(item.label || item.slug)}</strong>
+        <div class="qr-slug">elifnuroztekin.com/r/${esc(item.slug)}</div>
+        <div class="qr-url" title="${esc(item.url)}">${esc(item.url)}</div>
+        <div class="qr-hits">Tarama: ${item.hits || 0}</div>
+      </div>
+      <div class="qr-actions">
+        <button class="btn btn-secondary btn-sm" onclick="qrIndir('${esc(item.slug)}','png')">PNG</button>
+        <button class="btn btn-secondary btn-sm" onclick="qrIndir('${esc(item.slug)}','jpg')">JPG</button>
+        <button class="btn btn-secondary btn-sm" onclick="qrIndir('${esc(item.slug)}','pdf')">PDF</button>
+        <button class="btn btn-secondary btn-sm" onclick="qrDuzenle('${esc(item.slug)}')">Düzenle</button>
+        <button class="btn btn-danger btn-sm" onclick="qrSil('${esc(item.slug)}')">Sil</button>
+      </div>`;
+    list.appendChild(row);
+    QR.drawCanvas(QR_BASE + item.slug, 60).then(el => {
+      const wrap = document.getElementById(`qr-thumb-${item.slug}`);
+      if (wrap && el) { el.style.cssText = "width:60px;height:60px"; wrap.appendChild(el); }
+    });
+  }
+}
+
+function qrModalForm(item = {}) {
+  return `
+    <div class="form-grid">
+      <div class="fg">
+        <label>Etiket (ürün adı vb.)</label>
+        <input id="qr-label" value="${esc(item.label || "")}" placeholder="Örn: Seramik Kase">
+      </div>
+      <div class="fg">
+        <label>Slug — elifnuroztekin.com/r/<strong>slug</strong></label>
+        <input id="qr-slug" value="${esc(item.slug || "")}" placeholder="kase-1" ${item.slug ? "readonly" : ""} style="${item.slug ? "opacity:.6;background:var(--bg)" : ""}">
+        ${item.slug ? '<small style="color:var(--muted);font-size:11px">Slug oluşturulduktan sonra değiştirilemez.</small>' : '<small style="color:var(--muted);font-size:11px">Sadece harf, rakam, tire. Örn: kase-1, atolye-seramik</small>'}
+      </div>
+      <div class="fg">
+        <label>Hedef URL (link değişebilir, QR bozulmaz)</label>
+        <input id="qr-url" type="url" value="${esc(item.url || "")}" placeholder="https://drive.google.com/...">
+      </div>
+      ${item.slug ? `<div class="qr-preview-wrap" id="qr-modal-preview"><div class="loading-state" style="padding:20px"><div class="spinner"></div></div></div>` : ""}
+    </div>`;
+}
+
+document.getElementById("qr-add-btn").addEventListener("click", () => {
+  openModal("Yeni QR Link", qrModalForm(), async () => {
+    const label = document.getElementById("qr-label").value.trim();
+    const slug = document.getElementById("qr-slug").value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-");
+    const url = document.getElementById("qr-url").value.trim();
+    if (!slug) throw new Error("Slug gerekli");
+    if (!url || !/^https?:\/\/.+/.test(url)) throw new Error("Geçerli bir URL girin (https://...)");
+    await api("POST", "/api/admin/qr-links", { slug, url, label });
+    toast("QR link oluşturuldu");
+    loadQrLinks();
+  });
+});
+
+window.qrDuzenle = function(slug) {
+  api("GET", "/api/admin/qr-links").then(data => {
+    const item = (data.items || []).find(i => i.slug === slug);
+    if (!item) { toast("Bulunamadı", "error"); return; }
+    openModal("QR Düzenle", qrModalForm(item), async () => {
+      const label = document.getElementById("qr-label").value.trim();
+      const url = document.getElementById("qr-url").value.trim();
+      if (!url || !/^https?:\/\/.+/.test(url)) throw new Error("Geçerli bir URL girin (https://...)");
+      await api("PUT", "/api/admin/qr-links", { slug, url, label });
+      toast("QR link güncellendi");
+      loadQrLinks();
+    });
+    setTimeout(() => {
+      const wrap = document.getElementById("qr-modal-preview");
+      if (!wrap) return;
+      QR.drawCanvas(QR_BASE + slug, 180).then(el => {
+        wrap.innerHTML = "";
+        if (el) { el.style.cssText = "width:180px;height:180px;border-radius:8px"; wrap.appendChild(el); }
+      });
+    }, 80);
+  });
+};
+
+window.qrSil = async function(slug) {
+  if (!confirm(`"${slug}" QR linki silinsin mi? Bu işlem geri alınamaz.`)) return;
+  await api("DELETE", "/api/admin/qr-links", { slug });
+  toast("Silindi");
+  loadQrLinks();
+};
+
+window.qrIndir = async function(slug, format) {
+  const el = await QR.drawCanvas(QR_BASE + slug, 512);
+  if (!el) { toast("QR oluşturulamadı", "error"); return; }
+
+  let canvas;
+  if (el.tagName === "CANVAS") {
+    canvas = el;
+  } else {
+    canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(el, 0, 0, 512, 512);
+  }
+
+  const filename = `qr-${slug}`;
+
+  if (format === "png") {
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = `${filename}.png`;
+    a.click();
+  } else if (format === "jpg") {
+    const tmp = document.createElement("canvas");
+    tmp.width = tmp.height = 512;
+    const ctx = tmp.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, 512, 512);
+    ctx.drawImage(canvas, 0, 0);
+    const a = document.createElement("a");
+    a.href = tmp.toDataURL("image/jpeg", 0.95);
+    a.download = `${filename}.jpg`;
+    a.click();
+  } else if (format === "pdf") {
+    const imgData = canvas.toDataURL("image/png");
+    // PDF oluştur — jsPDF CDN
+    if (!window.jspdf) {
+      await new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const qrMm = 80;
+    const x = (pageW - qrMm) / 2;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("ELİF NUR ÖZTEKİN", pageW / 2, 24, { align: "center" });
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text(`elifnuroztekin.com/r/${slug}`, pageW / 2, 32, { align: "center" });
+    doc.setTextColor(0);
+    doc.addImage(imgData, "PNG", x, 40, qrMm, qrMm);
+    doc.setFontSize(9);
+    doc.setTextColor(140);
+    doc.text("Bu QR kodu tarayarak ürüne ulaşabilirsiniz.", pageW / 2, 40 + qrMm + 8, { align: "center" });
+    doc.save(`${filename}.pdf`);
+  }
+};
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 if (jwtToken) {

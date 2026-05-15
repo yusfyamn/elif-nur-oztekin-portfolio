@@ -165,6 +165,20 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
     }
 
+    // ── QR kısa link redirect (public, auth yok) ──
+    if (path.startsWith("/r/") && request.method === "GET") {
+      const slug = decodeURIComponent(path.slice("/r/".length)).replace(/\/$/, "");
+      if (!slug || slug.includes("..") || slug.length > 120) {
+        return new Response("Bulunamadı", { status: 404 });
+      }
+      const record = await env.CMS_CONTENT.get(`qr:${slug}`, "json");
+      if (!record || typeof record.url !== "string") {
+        return new Response("Bu QR linki bulunamadı.", { status: 404, headers: { "Content-Type": "text/plain;charset=UTF-8" } });
+      }
+      await env.CMS_CONTENT.put(`qr:${slug}`, JSON.stringify({ ...record, hits: (record.hits || 0) + 1 }));
+      return Response.redirect(record.url, 301);
+    }
+
     // ── Public medya (KV veya R2) ──
     if (path.startsWith("/media/") && request.method === "GET") {
       const key = decodeURIComponent(path.slice("/media/".length));
@@ -335,6 +349,59 @@ export default {
           mesaj: String(x.mesaj ?? "").slice(0, 8000),
         }));
       await env.CMS_CONTENT.put(CONTACT_INBOX_KEY, JSON.stringify({ items: sanitized }));
+      return json({ ok: true }, 200, origin);
+    }
+
+    // ── Admin QR Linkleri ──
+    if (path === "/api/admin/qr-links" && request.method === "GET") {
+      const list = (await env.CMS_CONTENT.get("json:qr-links", "json")) || { items: [] };
+      return json(list, 200, origin);
+    }
+
+    if (path === "/api/admin/qr-links" && request.method === "POST") {
+      let body;
+      try { body = await request.json(); } catch { return err("Geçersiz JSON", 400, origin); }
+      const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").slice(0, 80) : "";
+      const targetUrl = typeof body.url === "string" ? body.url.trim() : "";
+      const label = typeof body.label === "string" ? body.label.trim().slice(0, 120) : "";
+      if (!slug) return err("Slug gerekli", 400, origin);
+      if (!targetUrl || !/^https?:\/\/.+/.test(targetUrl)) return err("Geçerli bir URL girin (https://...)", 400, origin);
+      const existing = await env.CMS_CONTENT.get(`qr:${slug}`, "json");
+      if (existing) return err("Bu slug zaten kullanımda", 409, origin);
+      const record = { slug, url: targetUrl, label, createdAt: Date.now(), hits: 0 };
+      await env.CMS_CONTENT.put(`qr:${slug}`, JSON.stringify(record));
+      const list = (await env.CMS_CONTENT.get("json:qr-links", "json")) || { items: [] };
+      list.items = [record, ...(Array.isArray(list.items) ? list.items : [])].slice(0, 500);
+      await env.CMS_CONTENT.put("json:qr-links", JSON.stringify(list));
+      return json({ ok: true, record }, 201, origin);
+    }
+
+    if (path === "/api/admin/qr-links" && request.method === "PUT") {
+      let body;
+      try { body = await request.json(); } catch { return err("Geçersiz JSON", 400, origin); }
+      const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
+      const targetUrl = typeof body.url === "string" ? body.url.trim() : "";
+      if (!slug) return err("Slug gerekli", 400, origin);
+      if (!targetUrl || !/^https?:\/\/.+/.test(targetUrl)) return err("Geçerli bir URL girin (https://...)", 400, origin);
+      const existing = await env.CMS_CONTENT.get(`qr:${slug}`, "json");
+      if (!existing) return err("Slug bulunamadı", 404, origin);
+      const updated = { ...existing, url: targetUrl, label: typeof body.label === "string" ? body.label.trim().slice(0, 120) : existing.label, updatedAt: Date.now() };
+      await env.CMS_CONTENT.put(`qr:${slug}`, JSON.stringify(updated));
+      const list = (await env.CMS_CONTENT.get("json:qr-links", "json")) || { items: [] };
+      list.items = (Array.isArray(list.items) ? list.items : []).map(i => i.slug === slug ? updated : i);
+      await env.CMS_CONTENT.put("json:qr-links", JSON.stringify(list));
+      return json({ ok: true, record: updated }, 200, origin);
+    }
+
+    if (path === "/api/admin/qr-links" && request.method === "DELETE") {
+      let body;
+      try { body = await request.json(); } catch { return err("Geçersiz JSON", 400, origin); }
+      const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
+      if (!slug) return err("Slug gerekli", 400, origin);
+      await env.CMS_CONTENT.delete(`qr:${slug}`);
+      const list = (await env.CMS_CONTENT.get("json:qr-links", "json")) || { items: [] };
+      list.items = (Array.isArray(list.items) ? list.items : []).filter(i => i.slug !== slug);
+      await env.CMS_CONTENT.put("json:qr-links", JSON.stringify(list));
       return json({ ok: true }, 200, origin);
     }
 
